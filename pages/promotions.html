@@ -23,11 +23,11 @@
   --border-light: #F0EDF7;
   --shadow-sm: 0 1px 3px rgba(108,63,197,0.08);
   --shadow-md: 0 4px 12px rgba(108,63,197,0.12);
-  --shadow-lg: 0 8px 30px rgba(108,63,197,0.16);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --transition-fast: 0.2s ease;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -72,13 +72,21 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-weight: 600;
   color: var(--text-medium);
   border-radius: var(--radius-sm);
-  transition: 0.2s;
+  transition: var(--transition-fast);
 }
 .nav-link:hover, .nav-link.active {
   color: var(--primary);
   background: var(--primary-lighter);
 }
-.header-actions { display: flex; align-items: center; gap: 8px; }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#authButtons {
+  display: flex;
+  gap: 12px;
+}
 .header-btn {
   display: flex;
   align-items: center;
@@ -198,7 +206,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   justify-content: center;
   border-radius: 8px;
 }
-.drawer-item-img img { max-height: 60px; }
+.drawer-item-img img { max-height: 60px; max-width: 60px; object-fit: contain; }
 .drawer-item-info { flex: 1; }
 .drawer-item-name { font-weight: 600; font-size: 0.85rem; }
 .drawer-item-price { font-weight: 700; margin-top: 4px; }
@@ -222,6 +230,20 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-size: 1.2rem;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
+}
+.checkout-btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  width: 100%;
+  transition: var(--transition-fast);
+}
+.checkout-btn:hover {
+  background: var(--primary-dark);
 }
 .drawer-empty {
   text-align: center;
@@ -299,7 +321,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   margin-top: 12px;
 }
 
-/* ========== AUTH MODAL ========== */
+/* ========== MODALS ========== */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -317,9 +339,9 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 .modal {
   background: var(--bg-white);
   border-radius: var(--radius-lg);
-  max-width: 400px;
+  max-width: 500px;
   width: 90%;
-  padding: 30px;
+  padding: 28px;
   position: relative;
 }
 .modal-close {
@@ -330,13 +352,22 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   height: 32px;
   background: var(--bg-gray);
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
-.modal input {
+.modal input, .modal textarea {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.modal textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 .modal button[type="submit"] {
   width: 100%;
@@ -346,6 +377,11 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   border-radius: var(--radius-sm);
   font-weight: 700;
   margin-top: 12px;
+}
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* ========== FOOTER ========== */
@@ -370,6 +406,12 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   display: block;
   font-size: 0.85rem;
   padding: 4px 0;
+  transition: color 0.2s, text-decoration 0.2s;
+  cursor: pointer;
+}
+.footer-col a:hover {
+  color: white;
+  text-decoration: underline;
 }
 .footer-bottom {
   text-align: center;
@@ -430,6 +472,21 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   </div>
 </div>
 
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
+    <h2 style="margin-bottom:20px;">Оформление заказа</h2>
+    <form id="checkoutForm" class="checkout-form" onsubmit="submitOrder(event)">
+      <input type="text" id="checkoutName" placeholder="Ваше имя" required>
+      <input type="tel" id="checkoutPhone" placeholder="Телефон" required>
+      <input type="email" id="checkoutEmail" placeholder="Email" required>
+      <textarea id="checkoutAddress" placeholder="Адрес доставки" required></textarea>
+      <button type="submit">Подтвердить заказ</button>
+    </form>
+  </div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
@@ -448,7 +505,12 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-col"><h4>California</h4><p>Техника Apple с доставкой по всей России</p></div>
-    <div class="footer-col"><h4>Каталог</h4><a href="catalog.html">Смартфоны</a><a href="catalog.html">Ноутбуки</a><a href="catalog.html">Аксессуары</a></div>
+    <div class="footer-col">
+      <h4>Каталог</h4>
+      <a href="catalog.html?category=smartphones">Смартфоны</a>
+      <a href="catalog.html?category=laptops">Ноутбуки</a>
+      <a href="catalog.html?category=wearables">Аксессуары</a>
+    </div>
     <div class="footer-col"><h4>Покупателям</h4><a href="agreement.html">Пользовательское соглашение</a></div>
     <div class="footer-col"><h4>Контакты</h4><a>+7 (800) 123-45-67</a><a>info@california.store</a></div>
   </div>
@@ -456,12 +518,12 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 </footer>
 
 <script>
-// Данные акций
+// Данные акций с локальными картинками
 const PROMOTIONS = [
-  { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
-  { title:"MacBook Air M3 — бесплатная доставка", text:"Закажите MacBook Air на чипе M3 и получите бесплатную экспресс-доставку + подарочный чехол.", image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", date:"10.04 – 25.04", models:"MacBook Air 13″ M3, MacBook Air 15″ M3" },
-  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
-  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1b9574259-2c56-4bea-9263-5a9525e7a435.png", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
+  { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"../assets/iphone15promax.jpg", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
+  { title:"MacBook Air M3 — бесплатная доставка", text:"Закажите MacBook Air на чипе M3 и получите бесплатную экспресс-доставку + подарочный чехол.", image:"../assets/macbookairm313.jpg", date:"10.04 – 25.04", models:"MacBook Air 13″ M3, MacBook Air 15″ M3" },
+  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"../assets/airpods-2-2019.jpg", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
+  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"../assets/aplvat.jpg", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
 ];
 
 // Глобальное состояние
@@ -469,7 +531,7 @@ let cart = [];
 let currentUser = null;
 let authMode = 'login';
 
-// Загрузка корзины и пользователя
+// Загрузка корзины
 function loadCart() {
   try {
     const saved = localStorage.getItem('california_cart');
@@ -490,12 +552,6 @@ function updateCartBadge() {
   badge.classList.toggle('visible', count > 0);
 }
 function getCartTotal() {
-  // На странице акций нет товаров, но для отображения корзины нужно
-  // Мы не храним цены в корзине, но для демо используем заглушку.
-  // В реальности цены нужно брать из каталога, но здесь просто покажем сумму 0, если нет товаров.
-  // Чтобы корзина работала, нужно синхронизировать с PRODUCTS из catalog, но на странице акций их нет.
-  // Для простоты сделаем так: если есть товары, но нет цен – покажем 0.
-  // Пользователь будет переходить в каталог для добавления.
   return cart.reduce((sum, item) => sum + (item.price || 0) * item.qty, 0);
 }
 function renderCartDrawer() {
@@ -506,14 +562,12 @@ function renderCartDrawer() {
     totalContainer.innerHTML = '';
     return;
   }
-  // Для отображения цен нужно запрашивать из каталога, но на этой странице нет списка товаров.
-  // Поэтому покажем просто названия и количество, без цен (или заглушку).
-  let itemsHtml = cart.map(item => {
-    return `<div class="drawer-item">
-      <div class="drawer-item-img"><img src="https://via.placeholder.com/60?text=Apple" alt="товар"></div>
+  let itemsHtml = cart.map(item => `
+    <div class="drawer-item">
+      <div class="drawer-item-img"><img src="${item.image}" alt="${item.name}"></div>
       <div class="drawer-item-info">
-        <div class="drawer-item-name">Товар #${item.id}</div>
-        <div class="drawer-item-price">${item.price ? item.price.toLocaleString() + ' ₽' : 'Цена в каталоге'}</div>
+        <div class="drawer-item-name">${item.name}</div>
+        <div class="drawer-item-price">${item.price.toLocaleString()} ₽</div>
         <div class="drawer-qty">
           <button onclick="updateCartQty(${item.id}, -1)">−</button>
           <span>${item.qty}</span>
@@ -521,10 +575,15 @@ function renderCartDrawer() {
           <button onclick="removeFromCart(${item.id})">🗑</button>
         </div>
       </div>
-    </div>`;
-  }).join('');
+    </div>
+  `).join('');
   container.innerHTML = itemsHtml;
-  totalContainer.innerHTML = `<span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>`;
+  totalContainer.innerHTML = `
+    <div style="display:flex; justify-content:space-between;">
+      <span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>
+  `;
 }
 function updateCartQty(id, delta) {
   const item = cart.find(c => c.id === id);
@@ -540,6 +599,34 @@ function removeFromCart(id) {
 }
 function openCartDrawer() { document.getElementById('cartDrawerOverlay').classList.add('active'); }
 function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
+
+// Оформление заказа
+function openCheckoutModal() {
+  if(!cart.length) {
+    alert("Корзина пуста");
+    return;
+  }
+  document.getElementById('checkoutModal').classList.add('active');
+}
+function closeCheckoutModal() {
+  document.getElementById('checkoutModal').classList.remove('active');
+}
+function submitOrder(e) {
+  e.preventDefault();
+  const name = document.getElementById('checkoutName').value;
+  const phone = document.getElementById('checkoutPhone').value;
+  const email = document.getElementById('checkoutEmail').value;
+  const address = document.getElementById('checkoutAddress').value;
+  if(!name || !phone || !email || !address) {
+    alert("Заполните все поля");
+    return;
+  }
+  alert(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят.\nДоставка по адресу: ${address}\nОжидайте звонка на ${phone}`);
+  cart = [];
+  saveCart();
+  closeCheckoutModal();
+  closeCartDrawer();
+}
 
 // Авторизация
 function loadUser() {

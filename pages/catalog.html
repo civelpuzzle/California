@@ -88,7 +88,15 @@ ul { list-style: none; }
   color: var(--primary);
   background: var(--primary-lighter);
 }
-.header-actions { display: flex; align-items: center; gap: 8px; }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#authButtons {
+  display: flex;
+  gap: 12px;
+}
 .header-btn {
   display: flex;
   align-items: center;
@@ -97,7 +105,6 @@ ul { list-style: none; }
   font-weight: 600;
   color: var(--text-medium);
   border-radius: var(--radius-sm);
-  transition: var(--transition-fast);
   position: relative;
 }
 .header-btn:hover { background: var(--primary-lighter); color: var(--primary); }
@@ -521,7 +528,7 @@ ul { list-style: none; }
   justify-content: center;
   border-radius: 8px;
 }
-.drawer-item-img img { max-height: 60px; }
+.drawer-item-img img { max-height: 60px; max-width: 60px; object-fit: contain; }
 .drawer-item-info { flex: 1; }
 .drawer-item-name { font-weight: 600; font-size: 0.85rem; }
 .drawer-item-price { font-weight: 700; margin-top: 4px; }
@@ -545,6 +552,20 @@ ul { list-style: none; }
   font-size: 1.2rem;
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
+}
+.checkout-btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  width: 100%;
+  transition: var(--transition-fast);
+}
+.checkout-btn:hover {
+  background: var(--primary-dark);
 }
 .drawer-empty {
   text-align: center;
@@ -563,7 +584,7 @@ ul { list-style: none; }
   margin-top: 12px;
 }
 
-/* MODAL */
+/* MODAL PRODUCT */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -587,9 +608,30 @@ ul { list-style: none; }
   overflow: auto;
   position: relative;
 }
-.modal-product { display: grid; grid-template-columns: 1fr 1fr; }
-.modal-product-img { background: var(--bg-gray); padding: 30px; display: flex; align-items: center; justify-content: center; }
-.modal-product-info { padding: 28px; }
+.modal-product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.modal-product-img {
+  background: var(--bg-gray);
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.modal-product-img img {
+  max-width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+}
+.modal-product-info {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 .modal-close {
   position: absolute;
   top: 12px;
@@ -598,6 +640,70 @@ ul { list-style: none; }
   height: 36px;
   background: var(--bg-gray);
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+.modal-close:hover {
+  background: var(--border);
+}
+.modal-qty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+.modal-qty button {
+  width: 32px;
+  height: 32px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+.modal-qty span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+.modal-add-btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  margin-top: 8px;
+}
+/* Стили для форм в модалках (авторизация, оформление) */
+.modal input, .modal textarea, .modal select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.modal textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.modal button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  margin-top: 12px;
+}
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 /* FOOTER */
@@ -622,6 +728,12 @@ ul { list-style: none; }
   display: block;
   font-size: 0.85rem;
   padding: 4px 0;
+  transition: color 0.2s, text-decoration 0.2s;
+  cursor: pointer;
+}
+.footer-col a:hover {
+  color: white;
+  text-decoration: underline;
 }
 .footer-bottom {
   text-align: center;
@@ -629,7 +741,6 @@ ul { list-style: none; }
   border-top: 1px solid rgba(255,255,255,0.1);
   margin-top: 40px;
 }
-
 @media (max-width: 992px) {
   .product-grid { grid-template-columns: repeat(2,1fr); }
   .slide { flex-direction: column; text-align: center; padding: 32px; }
@@ -641,6 +752,7 @@ ul { list-style: none; }
   .product-grid { grid-template-columns: 1fr; }
   .footer-content { grid-template-columns: 1fr; }
   .modal-product { grid-template-columns: 1fr; }
+  .modal-product-img { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
 }
 </style>
 </head>
@@ -725,14 +837,36 @@ ul { list-style: none; }
       <div class="modal-product-img" id="modalImg"></div>
       <div class="modal-product-info">
         <div id="modalCategory" class="product-category"></div>
-        <h2 id="modalName"></h2>
+        <h2 id="modalName" style="margin:0"></h2>
         <div id="modalRating" class="product-rating"></div>
-        <p id="modalDesc"></p>
-        <div class="product-price-row"><span id="modalPrice" class="product-price"></span><span id="modalOldPrice" class="product-old-price"></span></div>
-        <div style="display:flex; gap:12px; margin:16px 0"><button onclick="changeModalQty(-1)">−</button><span id="modalQty">1</span><button onclick="changeModalQty(1)">+</button></div>
-        <button class="btn-add-cart" onclick="addFromModal()">В корзину</button>
+        <p id="modalDesc" style="color:var(--text-medium); font-size:0.9rem;"></p>
+        <div class="product-price-row">
+          <span id="modalPrice" class="product-price"></span>
+          <span id="modalOldPrice" class="product-old-price"></span>
+        </div>
+        <div class="modal-qty">
+          <button onclick="changeModalQty(-1)">−</button>
+          <span id="modalQty">1</span>
+          <button onclick="changeModalQty(1)">+</button>
+        </div>
+        <button class="modal-add-btn" onclick="addFromModal()">Добавить в корзину</button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal" style="max-width:500px; padding:28px;">
+    <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
+    <h2 style="margin-bottom:20px;">Оформление заказа</h2>
+    <form id="checkoutForm" class="checkout-form" onsubmit="submitOrder(event)">
+      <input type="text" id="checkoutName" placeholder="Ваше имя" required>
+      <input type="tel" id="checkoutPhone" placeholder="Телефон" required>
+      <input type="email" id="checkoutEmail" placeholder="Email" required>
+      <textarea id="checkoutAddress" placeholder="Адрес доставки" required></textarea>
+      <button type="submit" style="background:var(--primary); color:white; padding:12px; border-radius:var(--radius-sm); font-weight:700;">Подтвердить заказ</button>
+    </form>
   </div>
 </div>
 
@@ -747,14 +881,19 @@ ul { list-style: none; }
       <input type="password" id="authPassword" placeholder="Пароль" required>
       <button type="submit" id="authSubmitBtn">Войти</button>
     </form>
-    <p id="authSwitch">Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a></p>
+    <p id="authSwitch" style="margin-top:16px; text-align:center;">Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a></p>
   </div>
 </div>
 
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-col"><h4>California</h4><p>Качественная техника Apple по лучшим ценам</p></div>
-    <div class="footer-col"><h4>Каталог</h4><a href="catalog.html">Смартфоны</a><a href="catalog.html">Ноутбуки</a><a href="catalog.html">Аксессуары</a></div>
+    <div class="footer-col">
+      <h4>Каталог</h4>
+      <a onclick="applyCategoryFilter('smartphones')">Смартфоны</a>
+      <a onclick="applyCategoryFilter('laptops')">Ноутбуки</a>
+      <a onclick="applyCategoryFilter('wearables')">Аксессуары</a>
+    </div>
     <div class="footer-col"><h4>Покупателям</h4><a href="agreement.html">Пользовательское соглашение</a></div>
     <div class="footer-col"><h4>Контакты</h4><a>+7 (800) 123-45-67</a><a>info@california.store</a></div>
   </div>
@@ -762,60 +901,189 @@ ul { list-style: none; }
 </footer>
 
 <script>
-// ---------- APPLE PRODUCTS ----------
+// ---------- ТОВАРЫ С ЛОКАЛЬНЫМИ КАРТИНКАМИ И НОВЫМИ ОПИСАНИЯМИ ----------
 const PRODUCTS = [
-  { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", description:"Титан, A17 Pro, 48MP", category:"smartphones", badge:"hit", rating:4.9, reviews:342, popular:98 },
-  { id:2, name:"iPhone 15 Pro 128GB", price:119990, oldPrice:134990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", description:"A17 Pro, 6.1″ Super Retina", category:"smartphones", badge:"hit", rating:4.8, reviews:289, popular:95 },
-  { id:3, name:"iPhone 15 Plus 128GB", price:99990, oldPrice:112990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/16d07e3e2-1b5d-4a50-82d5-efa674f52a34.png", description:"Большой экран 6.7″", category:"smartphones", badge:"sale", rating:4.7, reviews:210, popular:88 },
-  { id:4, name:"iPhone 14 128GB", price:74990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/16d07e3e2-1b5d-4a50-82d5-efa674f52a34.png", description:"A15 Bionic, отличная камера", category:"smartphones", badge:"sale", rating:4.6, reviews:512, popular:86 },
-  { id:5, name:"MacBook Air M3 13″", price:129990, oldPrice:null, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", description:"Чип M3, до 18ч работы", category:"laptops", badge:"new", rating:4.9, reviews:178, popular:96 },
-  { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", description:"Для профессионалов", category:"laptops", badge:"hit", rating:4.9, reviews:143, popular:92 },
-  { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1e30709f7-b8f0-4a49-bf1f-4107e6e58270.png", description:"Ultra Retina XDR", category:"tablets", badge:"new", rating:4.8, reviews:112, popular:89 },
-  { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1e30709f7-b8f0-4a49-bf1f-4107e6e58270.png", description:"Легкий и мощный", category:"tablets", badge:"sale", rating:4.7, reviews:234, popular:82 },
-  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1b9574259-2c56-4bea-9263-5a9525e7a435.png", description:"49mm титан, GPS", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
-  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1b9574259-2c56-4bea-9263-5a9525e7a435.png", description:"S9 SiP, яркий дисплей", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
-  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", description:"Шумоподавление, адаптивный звук", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
-  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", description:"Наушники премиум-класса", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
+  { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"../assets/iphone15promax.jpg", description:"6.7″ Super Retina XDR, титановый корпус, чип A17 Pro, 48MP главная камера с 5-кратным зумом, до 29 часов видео.", category:"smartphones", badge:"hit", rating:4.9, reviews:342, popular:98 },
+  { id:2, name:"iPhone 15 Pro 128GB", price:119990, oldPrice:134990, image:"../assets/iphone15pro.jpg", description:"6.1″ Super Retina XDR, титан, A17 Pro, 48MP камера с 3-кратным зумом, USB-C 3.0, Action button.", category:"smartphones", badge:"hit", rating:4.8, reviews:289, popular:95 },
+  { id:3, name:"iPhone 15 Plus 128GB", price:99990, oldPrice:112990, image:"../assets/iphone15plus.jpg", description:"6.7″ Super Retina XDR, алюминий, A16 Bionic, 48MP основная камера, Dynamic Island, отличное время работы.", category:"smartphones", badge:"sale", rating:4.7, reviews:210, popular:88 },
+  { id:4, name:"iPhone 14 128GB", price:74990, oldPrice:89990, image:"../assets/iphone14.jpg", description:"6.1″ Super Retina XDR, A15 Bionic, улучшенная фронтальная камера, режим действия при съёмке видео.", category:"smartphones", badge:"sale", rating:4.6, reviews:512, popular:86 },
+  { id:5, name:"MacBook Air M3 13″", price:129990, oldPrice:null, image:"../assets/macbookairm313.jpg", description:"13.6″ Liquid Retina, чип M3 (8‑ядерный CPU, 10‑ядерный GPU), до 18 часов работы, безвентиляторный дизайн.", category:"laptops", badge:"new", rating:4.9, reviews:178, popular:96 },
+  { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"../assets/macbookprom314.jpg", description:"14.2″ Liquid Retina XDR, M3 Pro (12‑ядерный CPU, 18‑ядерный GPU), до 17 часов, HDMI, слот SDXC.", category:"laptops", badge:"hit", rating:4.9, reviews:143, popular:92 },
+  { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"../assets/ipadm4pro.jpg", description:"11″ Ultra Retina XDR, чип M4, поддержка Apple Pencil Pro, Face ID, Thunderbolt / USB 4.", category:"tablets", badge:"new", rating:4.8, reviews:112, popular:89 },
+  { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"../assets/ipadm4pro.jpg", description:"10.9″ Liquid Retina, M2, поддержка Apple Pencil USB-C, Touch ID, до 10 часов работы.", category:"tablets", badge:"sale", rating:4.7, reviews:234, popular:82 },
+  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"../assets/aplvat.jpg", description:"49 мм титановый корпус, дисплей 3000 нит, S9 SiP, двойной тап, до 36 часов автономности.", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
+  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"../assets/aplvat.jpg", description:"41 или 45 мм, S9 SiP, яркий дисплей, жест двойного касания, отслеживание здоровья.", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
+  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"../assets/airpods-2-2019.jpg", description:"Активное шумоподавление, адаптивный звук, чип H2, кейс с динамиком и поддержкой Find My.", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
+  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"../assets/airpods-2-2019.jpg", description:"Накладные наушники с активным шумоподавлением, пространственным аудио, алюминиевая конструкция.", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
 ];
 
-let cart = [], currentUser = null, currentFilter="all", searchQuery="", currentSort="default", currentPage=1;
-let modalProductId = null, modalQty = 1;
+// ---------- КОРЗИНА ----------
+let cart = [];
+let currentUser = null;
+let currentFilter = "all";
+let searchQuery = "";
+let currentSort = "default";
+let currentPage = 1;
+let modalProductId = null;
+let modalQty = 1;
 let activeSlide = 0;
+let authMode = 'login';
 
-function loadCart() { try { let saved = localStorage.getItem('california_cart'); if(saved) cart = JSON.parse(saved); } catch(e) {} updateCartBadge(); renderCartDrawer(); }
-function saveCart() { localStorage.setItem('california_cart', JSON.stringify(cart)); updateCartBadge(); renderCartDrawer(); }
-function updateCartBadge() { let count = cart.reduce((s,i)=>s+i.qty,0); let badge = document.getElementById('cartBadge'); badge.textContent = count; badge.classList.toggle('visible', count>0); }
-function getCartTotal() { return cart.reduce((s,i)=>{ let p=PRODUCTS.find(p=>p.id===i.id); return s+(p?p.price*i.qty:0); },0); }
-
-function addToCart(id, qty=1) { let existing = cart.find(c=>c.id===id); if(existing) existing.qty+=qty; else cart.push({id,qty}); saveCart(); renderProducts(); showToast("Добавлено"); }
-function removeFromCart(id) { cart = cart.filter(c=>c.id!==id); saveCart(); renderCartDrawer(); renderProducts(); }
-
+function loadCart() {
+  try {
+    let saved = localStorage.getItem('california_cart');
+    if(saved) {
+      let parsed = JSON.parse(saved);
+      if(parsed.length && !parsed[0].name) {
+        cart = parsed.map(item => {
+          let product = PRODUCTS.find(p => p.id === item.id);
+          if(product) {
+            return {
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+              qty: item.qty
+            };
+          }
+          return null;
+        }).filter(Boolean);
+      } else {
+        cart = parsed;
+      }
+    }
+  } catch(e) { cart = []; }
+  updateCartBadge();
+  renderCartDrawer();
+}
+function saveCart() {
+  localStorage.setItem('california_cart', JSON.stringify(cart));
+  updateCartBadge();
+  renderCartDrawer();
+}
+function updateCartBadge() {
+  let count = cart.reduce((s,i)=>s+i.qty,0);
+  let badge = document.getElementById('cartBadge');
+  badge.textContent = count;
+  badge.classList.toggle('visible', count>0);
+}
+function getCartTotal() {
+  return cart.reduce((s,i)=>s + i.price * i.qty, 0);
+}
+function addToCart(product, qty=1) {
+  let existing = cart.find(c => c.id === product.id);
+  if(existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      qty: qty
+    });
+  }
+  saveCart();
+  renderProducts();
+  showToast("Товар добавлен в корзину");
+}
+function removeFromCart(id) {
+  cart = cart.filter(c => c.id !== id);
+  saveCart();
+  renderCartDrawer();
+  renderProducts();
+}
+function updateCartQty(id, delta) {
+  let item = cart.find(c => c.id === id);
+  if(item) {
+    item.qty += delta;
+    if(item.qty < 1) removeFromCart(id);
+    else saveCart();
+  }
+}
 function renderCartDrawer() {
   let container = document.getElementById('drawerItems');
   let totalContainer = document.getElementById('drawerTotal');
-  if(!cart.length) { container.innerHTML = `<div class="drawer-empty">Корзина пуста<br><a href="catalog.html" class="empty-catalog-btn">Перейти в каталог →</a></div>`; totalContainer.innerHTML=''; return; }
-  let itemsHtml = cart.map(item=>{
-    let p = PRODUCTS.find(p=>p.id===item.id);
-    if(!p) return '';
-    return `<div class="drawer-item"><div class="drawer-item-img"><img src="${p.image}"></div><div class="drawer-item-info"><div class="drawer-item-name">${p.name}</div><div class="drawer-item-price">${p.price.toLocaleString()} ₽</div><div class="drawer-qty"><button onclick="updateCartQty(${p.id},-1)">−</button><span>${item.qty}</span><button onclick="updateCartQty(${p.id},1)">+</button><button onclick="removeFromCart(${p.id})">🗑</button></div></div></div>`;
-  }).join('');
+  if(!cart.length) {
+    container.innerHTML = `<div class="drawer-empty">Корзина пуста<br><a href="catalog.html" class="empty-catalog-btn">Перейти в каталог →</a></div>`;
+    totalContainer.innerHTML = '';
+    return;
+  }
+  let itemsHtml = cart.map(item => `
+    <div class="drawer-item">
+      <div class="drawer-item-img"><img src="${item.image}" alt="${item.name}"></div>
+      <div class="drawer-item-info">
+        <div class="drawer-item-name">${item.name}</div>
+        <div class="drawer-item-price">${item.price.toLocaleString()} ₽</div>
+        <div class="drawer-qty">
+          <button onclick="updateCartQty(${item.id}, -1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="updateCartQty(${item.id}, 1)">+</button>
+          <button onclick="removeFromCart(${item.id})">🗑</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
   container.innerHTML = itemsHtml;
-  totalContainer.innerHTML = `<span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>`;
+  totalContainer.innerHTML = `
+    <div style="display:flex; justify-content:space-between;">
+      <span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>
+    </div>
+    <button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>
+  `;
 }
-function updateCartQty(id, delta) { let item = cart.find(c=>c.id===id); if(item) { item.qty+=delta; if(item.qty<1) removeFromCart(id); else saveCart(); renderCartDrawer(); renderProducts(); } }
 function openCartDrawer() { document.getElementById('cartDrawerOverlay').classList.add('active'); }
 function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
 document.getElementById('cartIconBtn').onclick = openCartDrawer;
 
-// Slider
+// ---------- ОФОРМЛЕНИЕ ЗАКАЗА ----------
+function openCheckoutModal() {
+  if(!cart.length) {
+    showToast("Корзина пуста");
+    return;
+  }
+  document.getElementById('checkoutModal').classList.add('active');
+}
+function closeCheckoutModal() {
+  document.getElementById('checkoutModal').classList.remove('active');
+}
+function submitOrder(e) {
+  e.preventDefault();
+  const name = document.getElementById('checkoutName').value;
+  const phone = document.getElementById('checkoutPhone').value;
+  const email = document.getElementById('checkoutEmail').value;
+  const address = document.getElementById('checkoutAddress').value;
+  if(!name || !phone || !email || !address) {
+    showToast("Заполните все поля");
+    return;
+  }
+  alert(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят.\nДоставка по адресу: ${address}\nОжидайте звонка на ${phone}`);
+  cart = [];
+  saveCart();
+  closeCheckoutModal();
+  closeCartDrawer();
+  renderProducts();
+}
+
+// ---------- СЛАЙДЕР ----------
 const slides = [
-  { badge:"🔥 Акция", title:"Скидка 15% на два iPhone", desc:"Купите два iPhone и получите скидку", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", link:"promotions.html" },
-  { badge:"✨ Новинка", title:"MacBook Air M3", desc:"Сверхпроизводительный ноутбук", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", link:"catalog.html" },
-  { badge:"🎧 Лучшая цена", title:"AirPods Pro 2", desc:"Кэшбэк 5000₽", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", link:"catalog.html" }
+  { badge:"🔥 Акция", title:"Скидка 15% на два iPhone", desc:"Купите два iPhone и получите скидку", img:"../assets/iphone15promax.jpg" },
+  { badge:"✨ Новинка", title:"MacBook Air M3", desc:"Сверхпроизводительный ноутбук", img:"../assets/macbookairm313.jpg" },
+  { badge:"🎧 Лучшая цена", title:"AirPods Pro 2", desc:"Кэшбэк 5000₽", img:"../assets/airpods-2-2019.jpg" }
 ];
 function buildSlider() {
   let track = document.getElementById('sliderTrack');
-  track.innerHTML = slides.map((s,idx)=>`<div class="slide" onclick="location.href='${s.link}'"><div class="slide-content"><span class="slide-badge">${s.badge}</span><h3 class="slide-title">${s.title}</h3><p class="slide-desc">${s.desc}</p><span class="slide-cta">Подробнее →</span></div><div class="slide-image"><img src="${s.img}"></div></div>`).join('');
+  track.innerHTML = slides.map((s,idx)=>`
+    <div class="slide" onclick="location.href='promotions.html'">
+      <div class="slide-content">
+        <span class="slide-badge">${s.badge}</span>
+        <h3 class="slide-title">${s.title}</h3>
+        <p class="slide-desc">${s.desc}</p>
+        <span class="slide-cta">Подробнее →</span>
+      </div>
+      <div class="slide-image"><img src="${s.img}"></div>
+    </div>
+  `).join('');
   let dotsHtml = slides.map((_,i)=>`<div class="dot ${i===0?'active':''}" data-index="${i}"></div>`).join('');
   document.getElementById('sliderDots').innerHTML = dotsHtml;
   document.querySelectorAll('.dot').forEach(dot=>dot.addEventListener('click',function(){ goToSlide(parseInt(this.dataset.index)); }));
@@ -828,7 +1096,7 @@ function nextSlide() { activeSlide = (activeSlide+1)%slides.length; goToSlide(ac
 function prevSlide() { activeSlide = (activeSlide-1+slides.length)%slides.length; goToSlide(activeSlide); }
 setInterval(nextSlide, 5000);
 
-// Filters, products
+// ---------- ФИЛЬТРАЦИЯ И ОТОБРАЖЕНИЕ ТОВАРОВ ----------
 function getFiltered() {
   let items = PRODUCTS.filter(p=>currentFilter==='all'||p.category===currentFilter);
   if(searchQuery.trim()) items = items.filter(p=>p.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -848,7 +1116,7 @@ function renderProducts() {
   grid.innerHTML = pageItems.map(p=>{
     let discount = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100):0;
     let inCart = cart.some(c=>c.id===p.id);
-    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<button class="product-wishlist" onclick="showToast('В избранное')">❤️</button><img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart(${p.id})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
+    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<button class="product-wishlist" onclick="showToast('Избранное в разработке')">❤️</button><img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
   }).join('');
   let pagHtml = `<button class="pagination-btn" ${currentPage===1?'disabled':''} onclick="changePage(-1)">←</button>`;
   for(let i=1;i<=totalPages;i++) pagHtml+=`<button class="pagination-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
@@ -862,18 +1130,109 @@ function handleSort(v) { currentSort=v; renderProducts(); }
 document.getElementById('searchInput').addEventListener('input', e=>{ searchQuery=e.target.value; currentPage=1; renderProducts(); });
 document.getElementById('sortSelect').addEventListener('change', e=>handleSort(e.target.value));
 function initFilters() { let cats = [...new Set(PRODUCTS.map(p=>p.category))]; let html = `<button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">Все</button>`; cats.forEach(c=>{ html+=`<button class="filter-btn" data-filter="${c}" onclick="handleFilter('${c}')">${c}</button>`; }); document.getElementById('filterGroup').innerHTML=html; }
-function openProductModal(id) { let p=PRODUCTS.find(p=>p.id===id); if(!p) return; modalProductId=id; modalQty=1; document.getElementById('modalImg').innerHTML=`<img src="${p.image}">`; document.getElementById('modalCategory').innerText=p.category; document.getElementById('modalName').innerText=p.name; document.getElementById('modalRating').innerHTML=`${'★'.repeat(Math.floor(p.rating))} ${p.rating}`; document.getElementById('modalDesc').innerText=p.description; document.getElementById('modalPrice').innerText=p.price.toLocaleString()+' ₽'; document.getElementById('modalOldPrice').innerText=p.oldPrice?p.oldPrice.toLocaleString()+' ₽':''; document.getElementById('modalQty').innerText='1'; document.getElementById('productModal').classList.add('active'); }
+// Применение фильтра из футера с прокруткой
+function applyCategoryFilter(category) {
+  handleFilter(category);
+  document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ---------- МОДАЛЬНОЕ ОКНО ТОВАРА ----------
+function openProductModal(id) {
+  let p=PRODUCTS.find(p=>p.id===id);
+  if(!p) return;
+  modalProductId=id;
+  modalQty=1;
+  document.getElementById('modalImg').innerHTML=`<img src="${p.image}" alt="${p.name}">`;
+  document.getElementById('modalCategory').innerText=p.category;
+  document.getElementById('modalName').innerText=p.name;
+  document.getElementById('modalRating').innerHTML=`${'★'.repeat(Math.floor(p.rating))} ${p.rating}`;
+  document.getElementById('modalDesc').innerText=p.description;
+  document.getElementById('modalPrice').innerText=p.price.toLocaleString()+' ₽';
+  document.getElementById('modalOldPrice').innerText=p.oldPrice?p.oldPrice.toLocaleString()+' ₽':'';
+  document.getElementById('modalQty').innerText='1';
+  document.getElementById('productModal').classList.add('active');
+}
 function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
 function changeModalQty(d) { modalQty=Math.max(1,modalQty+d); document.getElementById('modalQty').innerText=modalQty; }
-function addFromModal() { if(modalProductId) addToCart(modalProductId, modalQty); closeProductModal(); }
-// Auth
-function openAuthModal(mode) { document.getElementById('authModal').classList.add('active'); }
+function addFromModal() {
+  let product = PRODUCTS.find(p=>p.id===modalProductId);
+  if(product) addToCart({id:product.id, name:product.name, price:product.price, image:product.image}, modalQty);
+  closeProductModal();
+}
+
+// ---------- АВТОРИЗАЦИЯ (исправленная) ----------
+function loadUser() {
+  try {
+    const saved = localStorage.getItem('california_user');
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      updateAuthUI();
+    }
+  } catch(e) {}
+}
+function updateAuthUI() {
+  const authDiv = document.getElementById('authButtons');
+  const greetDiv = document.getElementById('userGreeting');
+  if (currentUser) {
+    authDiv.style.display = 'none';
+    greetDiv.style.display = 'flex';
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+  } else {
+    authDiv.style.display = 'flex';
+    greetDiv.style.display = 'none';
+  }
+}
+function openAuthModal(mode) {
+  authMode = mode;
+  document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация';
+  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+  document.getElementById('nameGroup').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('authSwitch').innerHTML = mode === 'login'
+    ? 'Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a>'
+    : 'Уже есть аккаунт? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Войти</a>';
+  document.getElementById('authModal').classList.add('active');
+}
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
-function handleAuth(e) { e.preventDefault(); let email = document.getElementById('authEmail').value; currentUser={name:email.split('@')[0], email}; localStorage.setItem('california_user',JSON.stringify(currentUser)); updateUI(); closeAuthModal(); showToast('Добро пожаловать'); }
-function logoutUser() { currentUser=null; localStorage.removeItem('california_user'); updateUI(); }
-function updateUI() { let authDiv=document.getElementById('authButtons'); let greetDiv=document.getElementById('userGreeting'); if(currentUser) { authDiv.style.display='none'; greetDiv.style.display='flex'; document.getElementById('userName').innerText=currentUser.name; } else { authDiv.style.display='flex'; greetDiv.style.display='none'; } }
+function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
+function handleAuth(e) {
+  e.preventDefault();
+  const email = document.getElementById('authEmail').value;
+  const password = document.getElementById('authPassword').value;
+  const name = document.getElementById('authName').value;
+  currentUser = { name: name || email.split('@')[0], email: email };
+  localStorage.setItem('california_user', JSON.stringify(currentUser));
+  updateAuthUI();
+  closeAuthModal();
+  showToast('Добро пожаловать!');
+}
+function logoutUser() {
+  if (confirm('Выйти из аккаунта?')) {
+    currentUser = null;
+    localStorage.removeItem('california_user');
+    updateAuthUI();
+  }
+}
 function showToast(msg) { alert(msg); }
-loadCart(); initFilters(); renderProducts(); buildSlider(); updateUI();
+
+// ---------- ПАРАМЕТР ИЗ URL (для фильтрации с других страниц) ----------
+function getUrlParam() {
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get('category');
+  if (category && ['smartphones','laptops','tablets','wearables','audio'].includes(category)) {
+    currentFilter = category;
+    currentPage = 1;
+  }
+}
+
+// ---------- ЗАПУСК ----------
+getUrlParam();
+loadCart();
+initFilters();
+renderProducts();
+buildSlider();
+loadUser();
+updateAuthUI();
 document.getElementById('cartDrawerOverlay').addEventListener('click',(e)=>{ if(e.target===document.getElementById('cartDrawerOverlay')) closeCartDrawer(); });
 </script>
 </body>
