@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>California — Каталог электроники</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+:root {
+  --primary: #6C3FC5;
+  --primary-dark: #5A2FB0;
+  --primary-light: #8B6FD9;
+  --primary-lighter: #EDE7F6;
+  --primary-lightest: #F5F0FF;
+  --accent: #FF6B35;
+  --accent-dark: #E55A2B;
+  --bg-white: #FFFFFF;
+  --bg-light: #F8F7FC;
+  --bg-gray: #F0EEF5;
+  --text-dark: #1A1A2E;
+  --text-medium: #4A4A6A;
+  --text-light: #8888A0;
+  --border: #E0DCF0;
+  --border-light: #F0EDF7;
+  --shadow-sm: 0 1px 3px rgba(108,63,197,0.08);
+  --shadow-md: 0 4px 12px rgba(108,63,197,0.12);
+  --shadow-lg: 0 8px 30px rgba(108,63,197,0.16);
+  --shadow-xl: 0 12px 40px rgba(108,63,197,0.2);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --transition-fast: 0.2s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; font-family: inherit; background: none; }
+input, select { font-family: inherit; }
+ul { list-style: none; }
+
+/* HEADER */
+.header {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+.header-top {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+.logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo svg { width: 32px; height: 32px; }
+.nav { display: flex; gap: 8px; }
+.nav-link {
+  padding: 8px 18px;
+  font-weight: 600;
+  color: var(--text-medium);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--primary);
+  background: var(--primary-lighter);
+}
+.header-actions { display: flex; align-items: center; gap: 8px; }
+.header-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-weight: 600;
+  color: var(--text-medium);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  position: relative;
+}
+.header-btn:hover { background: var(--primary-lighter); color: var(--primary); }
+.cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0);
+  transition: transform 0.2s ease;
+}
+.cart-badge.visible { transform: scale(1); }
+.btn-login, .btn-register {
+  padding: 8px 18px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+.btn-login { background: var(--primary-lighter); color: var(--primary); }
+.btn-login:hover { background: var(--primary-light); color: white; }
+.btn-register { background: var(--primary); color: white; }
+.btn-register:hover { background: var(--primary-dark); }
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--primary-lighter);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.mobile-menu-btn { display: none; }
+
+/* SLIDER */
+.slider-section {
+  max-width: 1320px;
+  margin: 24px auto;
+  padding: 0 24px;
+  position: relative;
+  overflow: hidden;
+}
+.slider-container {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+.slider-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  will-change: transform;
+}
+.slide {
+  flex: 0 0 100%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #4A1D96 100%);
+  padding: 48px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 260px;
+  position: relative;
+  cursor: pointer;
+}
+.slide-content { max-width: 55%; z-index: 2; }
+.slide-badge {
+  background: var(--accent);
+  color: white;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.slide-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 10px;
+}
+.slide-desc {
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 18px;
+}
+.slide-cta {
+  background: white;
+  color: var(--primary);
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.slide-image img {
+  max-height: 160px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+}
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.dot.active {
+  width: 24px;
+  border-radius: 20px;
+  background: var(--primary);
+}
+
+/* MAIN & PRODUCTS */
+.main-content {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+.page-title span { color: var(--primary); }
+.controls-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.filter-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 8px 18px;
+  font-weight: 600;
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+.filter-btn:hover, .filter-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.sort-select {
+  padding: 8px 32px 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-white);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234A4A6A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.search-input-wrap {
+  position: relative;
+  flex: 0 1 280px;
+}
+.search-input-wrap svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  color: var(--text-light);
+}
+.search-input {
+  width: 100%;
+  padding: 10px 14px 10px 42px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-white);
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.product-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  transition: var(--transition);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.product-card-img {
+  position: relative;
+  background: var(--bg-gray);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.product-card-img img {
+  max-height: 80%;
+  max-width: 80%;
+  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+.product-card:hover .product-card-img img {
+  transform: scale(1.05);
+}
+.product-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  z-index: 2;
+  background: var(--accent);
+  color: white;
+}
+.badge-new { background: var(--primary); }
+.badge-hit { background: #10B981; }
+.product-wishlist {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 2;
+}
+.product-card:hover .product-wishlist { opacity: 1; }
+.product-card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; }
+.product-category {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+.product-name {
+  font-weight: 600;
+  margin: 6px 0 4px;
+  font-size: 0.95rem;
+}
+.product-desc {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+}
+.stars { color: #FBBF24; }
+.product-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.product-old-price {
+  font-size: 0.8rem;
+  text-decoration: line-through;
+  color: var(--text-light);
+}
+.product-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-add-cart {
+  flex: 1;
+  padding: 8px 12px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-add-cart.added { background: #10B981; }
+.btn-details {
+  padding: 8px 12px;
+  background: var(--primary-lighter);
+  color: var(--primary);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 40px;
+}
+.pagination-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+.pagination-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* CART DRAWER */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.25s;
+}
+.drawer-overlay.active { visibility: visible; opacity: 1; }
+.cart-drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 420px;
+  max-width: 90vw;
+  height: 100%;
+  background: var(--bg-white);
+  box-shadow: var(--shadow-xl);
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  display: flex;
+  flex-direction: column;
+}
+.drawer-overlay.active .cart-drawer { transform: translateX(0); }
+.drawer-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.drawer-items {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.drawer-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+}
+.drawer-item-img {
+  width: 70px;
+  height: 70px;
+  background: var(--bg-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+.drawer-item-img img { max-height: 60px; }
+.drawer-item-info { flex: 1; }
+.drawer-item-name { font-weight: 600; font-size: 0.85rem; }
+.drawer-item-price { font-weight: 700; margin-top: 4px; }
+.drawer-qty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.drawer-qty button {
+  width: 28px;
+  height: 28px;
+  background: var(--border);
+  border-radius: 6px;
+  font-weight: bold;
+}
+.drawer-total {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  font-weight: 800;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+}
+.drawer-empty {
+  text-align: center;
+  padding: 40px;
+}
+.empty-catalog-btn {
+  background: var(--primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.2s;
+}
+.modal-overlay.active { visibility: visible; opacity: 1; }
+.modal {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  max-width: 800px;
+  width: 90%;
+  max-height: 85vh;
+  overflow: auto;
+  position: relative;
+}
+.modal-product { display: grid; grid-template-columns: 1fr 1fr; }
+.modal-product-img { background: var(--bg-gray); padding: 30px; display: flex; align-items: center; justify-content: center; }
+.modal-product-info { padding: 28px; }
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-gray);
+  border-radius: 50%;
+}
+
+/* FOOTER */
+.footer {
+  background: var(--text-dark);
+  color: rgba(255,255,255,0.7);
+  padding: 48px 24px 24px;
+  margin-top: 60px;
+}
+.footer-content {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+.footer-col h4 {
+  color: white;
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block;
+  font-size: 0.85rem;
+  padding: 4px 0;
+}
+.footer-bottom {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 40px;
+}
+
+@media (max-width: 992px) {
+  .product-grid { grid-template-columns: repeat(2,1fr); }
+  .slide { flex-direction: column; text-align: center; padding: 32px; }
+  .slide-content { max-width: 100%; }
+}
+@media (max-width: 768px) {
+  .nav, .btn-login, .btn-register { display: none; }
+  .mobile-menu-btn { display: block; }
+  .product-grid { grid-template-columns: 1fr; }
+  .footer-content { grid-template-columns: 1fr; }
+  .modal-product { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <a href="catalog.html" class="logo">
+      <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg>
+      California
+    </a>
+    <nav class="nav">
+      <a href="catalog.html" class="nav-link active">Все товары</a>
+      <a href="promotions.html" class="nav-link">Акции</a>
+    </nav>
+    <div class="header-actions">
+      <button class="header-btn" id="cartIconBtn">
+        <svg width="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span>Корзина</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <div id="authButtons">
+        <button class="btn-login" onclick="openAuthModal('login')">Вход</button>
+        <button class="btn-register" onclick="openAuthModal('register')">Регистрация</button>
+      </div>
+      <div id="userGreeting" style="display:none;" class="user-greeting" onclick="logoutUser()">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userName">User</span>
+      </div>
+      <button class="mobile-menu-btn">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- SLIDER -->
+<section class="slider-section">
+  <div class="slider-container" id="sliderContainer">
+    <div class="slider-track" id="sliderTrack"></div>
+  </div>
+  <div class="slider-dots" id="sliderDots"></div>
+</section>
+
+<main class="main-content">
+  <div class="page-header">
+    <h1 class="page-title">Все <span>товары</span></h1>
+    <div class="search-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="searchInput" placeholder="Поиск...">
+    </div>
+  </div>
+  <div class="controls-bar">
+    <div class="filter-group" id="filterGroup"></div>
+    <select class="sort-select" id="sortSelect">
+      <option value="default">По умолчанию</option>
+      <option value="price-asc">Сначала дешёвые</option>
+      <option value="price-desc">Сначала дорогие</option>
+      <option value="name-asc">По названию А-Я</option>
+      <option value="popular">По популярности</option>
+    </select>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+  <div class="pagination" id="pagination"></div>
+</main>
+
+<!-- DRAWER CART -->
+<div class="drawer-overlay" id="cartDrawerOverlay">
+  <div class="cart-drawer">
+    <div class="drawer-header">
+      <h3>Корзина</h3>
+      <button class="modal-close" onclick="closeCartDrawer()">✕</button>
+    </div>
+    <div id="drawerItems" class="drawer-items"></div>
+    <div id="drawerTotal" class="drawer-total"></div>
+  </div>
+</div>
+
+<!-- MODAL PRODUCT -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeProductModal()">✕</button>
+    <div class="modal-product">
+      <div class="modal-product-img" id="modalImg"></div>
+      <div class="modal-product-info">
+        <div id="modalCategory" class="product-category"></div>
+        <h2 id="modalName"></h2>
+        <div id="modalRating" class="product-rating"></div>
+        <p id="modalDesc"></p>
+        <div class="product-price-row"><span id="modalPrice" class="product-price"></span><span id="modalOldPrice" class="product-old-price"></span></div>
+        <div style="display:flex; gap:12px; margin:16px 0"><button onclick="changeModalQty(-1)">−</button><span id="modalQty">1</span><button onclick="changeModalQty(1)">+</button></div>
+        <button class="btn-add-cart" onclick="addFromModal()">В корзину</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal" style="max-width:400px; padding:30px;">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <h2 id="authTitle">Вход</h2>
+    <form id="authForm" onsubmit="handleAuth(event)">
+      <div id="nameGroup" style="display:none;"><input type="text" id="authName" placeholder="Имя"></div>
+      <input type="email" id="authEmail" placeholder="Email" required>
+      <input type="password" id="authPassword" placeholder="Пароль" required>
+      <button type="submit" id="authSubmitBtn">Войти</button>
+    </form>
+    <p id="authSwitch">Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a></p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-col"><h4>California</h4><p>Качественная техника Apple по лучшим ценам</p></div>
+    <div class="footer-col"><h4>Каталог</h4><a href="catalog.html">Смартфоны</a><a href="catalog.html">Ноутбуки</a><a href="catalog.html">Аксессуары</a></div>
+    <div class="footer-col"><h4>Покупателям</h4><a href="agreement.html">Пользовательское соглашение</a></div>
+    <div class="footer-col"><h4>Контакты</h4><a>+7 (800) 123-45-67</a><a>info@california.store</a></div>
+  </div>
+  <div class="footer-bottom">© 2026 California. Все права защищены.</div>
+</footer>
+
+<script>
+// ---------- APPLE PRODUCTS ----------
+const PRODUCTS = [
+  { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", description:"Титан, A17 Pro, 48MP", category:"smartphones", badge:"hit", rating:4.9, reviews:342, popular:98 },
+  { id:2, name:"iPhone 15 Pro 128GB", price:119990, oldPrice:134990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", description:"A17 Pro, 6.1″ Super Retina", category:"smartphones", badge:"hit", rating:4.8, reviews:289, popular:95 },
+  { id:3, name:"iPhone 15 Plus 128GB", price:99990, oldPrice:112990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/16d07e3e2-1b5d-4a50-82d5-efa674f52a34.png", description:"Большой экран 6.7″", category:"smartphones", badge:"sale", rating:4.7, reviews:210, popular:88 },
+  { id:4, name:"iPhone 14 128GB", price:74990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/16d07e3e2-1b5d-4a50-82d5-efa674f52a34.png", description:"A15 Bionic, отличная камера", category:"smartphones", badge:"sale", rating:4.6, reviews:512, popular:86 },
+  { id:5, name:"MacBook Air M3 13″", price:129990, oldPrice:null, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", description:"Чип M3, до 18ч работы", category:"laptops", badge:"new", rating:4.9, reviews:178, popular:96 },
+  { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", description:"Для профессионалов", category:"laptops", badge:"hit", rating:4.9, reviews:143, popular:92 },
+  { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1e30709f7-b8f0-4a49-bf1f-4107e6e58270.png", description:"Ultra Retina XDR", category:"tablets", badge:"new", rating:4.8, reviews:112, popular:89 },
+  { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1e30709f7-b8f0-4a49-bf1f-4107e6e58270.png", description:"Легкий и мощный", category:"tablets", badge:"sale", rating:4.7, reviews:234, popular:82 },
+  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1b9574259-2c56-4bea-9263-5a9525e7a435.png", description:"49mm титан, GPS", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
+  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1b9574259-2c56-4bea-9263-5a9525e7a435.png", description:"S9 SiP, яркий дисплей", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
+  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", description:"Шумоподавление, адаптивный звук", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
+  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", description:"Наушники премиум-класса", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
+];
+
+let cart = [], currentUser = null, currentFilter="all", searchQuery="", currentSort="default", currentPage=1;
+let modalProductId = null, modalQty = 1;
+let activeSlide = 0;
+
+function loadCart() { try { let saved = localStorage.getItem('california_cart'); if(saved) cart = JSON.parse(saved); } catch(e) {} updateCartBadge(); renderCartDrawer(); }
+function saveCart() { localStorage.setItem('california_cart', JSON.stringify(cart)); updateCartBadge(); renderCartDrawer(); }
+function updateCartBadge() { let count = cart.reduce((s,i)=>s+i.qty,0); let badge = document.getElementById('cartBadge'); badge.textContent = count; badge.classList.toggle('visible', count>0); }
+function getCartTotal() { return cart.reduce((s,i)=>{ let p=PRODUCTS.find(p=>p.id===i.id); return s+(p?p.price*i.qty:0); },0); }
+
+function addToCart(id, qty=1) { let existing = cart.find(c=>c.id===id); if(existing) existing.qty+=qty; else cart.push({id,qty}); saveCart(); renderProducts(); showToast("Добавлено"); }
+function removeFromCart(id) { cart = cart.filter(c=>c.id!==id); saveCart(); renderCartDrawer(); renderProducts(); }
+
+function renderCartDrawer() {
+  let container = document.getElementById('drawerItems');
+  let totalContainer = document.getElementById('drawerTotal');
+  if(!cart.length) { container.innerHTML = `<div class="drawer-empty">Корзина пуста<br><a href="catalog.html" class="empty-catalog-btn">Перейти в каталог →</a></div>`; totalContainer.innerHTML=''; return; }
+  let itemsHtml = cart.map(item=>{
+    let p = PRODUCTS.find(p=>p.id===item.id);
+    if(!p) return '';
+    return `<div class="drawer-item"><div class="drawer-item-img"><img src="${p.image}"></div><div class="drawer-item-info"><div class="drawer-item-name">${p.name}</div><div class="drawer-item-price">${p.price.toLocaleString()} ₽</div><div class="drawer-qty"><button onclick="updateCartQty(${p.id},-1)">−</button><span>${item.qty}</span><button onclick="updateCartQty(${p.id},1)">+</button><button onclick="removeFromCart(${p.id})">🗑</button></div></div></div>`;
+  }).join('');
+  container.innerHTML = itemsHtml;
+  totalContainer.innerHTML = `<span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>`;
+}
+function updateCartQty(id, delta) { let item = cart.find(c=>c.id===id); if(item) { item.qty+=delta; if(item.qty<1) removeFromCart(id); else saveCart(); renderCartDrawer(); renderProducts(); } }
+function openCartDrawer() { document.getElementById('cartDrawerOverlay').classList.add('active'); }
+function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
+document.getElementById('cartIconBtn').onclick = openCartDrawer;
+
+// Slider
+const slides = [
+  { badge:"🔥 Акция", title:"Скидка 15% на два iPhone", desc:"Купите два iPhone и получите скидку", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a02d95aa-e7e8-424e-8f10-642c71e4ab5f.png", link:"promotions.html" },
+  { badge:"✨ Новинка", title:"MacBook Air M3", desc:"Сверхпроизводительный ноутбук", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/10991293e-9010-49c2-baa8-ac41f294eb4b.png", link:"catalog.html" },
+  { badge:"🎧 Лучшая цена", title:"AirPods Pro 2", desc:"Кэшбэк 5000₽", img:"https://image.qwenlm.ai/public_source/4b64914c-472a-4981-9aa8-effbac0cf140/1a25f3036-8290-42b9-aa5f-5dd092a7e42d.png", link:"catalog.html" }
+];
+function buildSlider() {
+  let track = document.getElementById('sliderTrack');
+  track.innerHTML = slides.map((s,idx)=>`<div class="slide" onclick="location.href='${s.link}'"><div class="slide-content"><span class="slide-badge">${s.badge}</span><h3 class="slide-title">${s.title}</h3><p class="slide-desc">${s.desc}</p><span class="slide-cta">Подробнее →</span></div><div class="slide-image"><img src="${s.img}"></div></div>`).join('');
+  let dotsHtml = slides.map((_,i)=>`<div class="dot ${i===0?'active':''}" data-index="${i}"></div>`).join('');
+  document.getElementById('sliderDots').innerHTML = dotsHtml;
+  document.querySelectorAll('.dot').forEach(dot=>dot.addEventListener('click',function(){ goToSlide(parseInt(this.dataset.index)); }));
+  let startX=0, isDragging=false; let container = document.querySelector('.slider-container');
+  container.addEventListener('touchstart',e=>{ startX=e.touches[0].clientX; isDragging=true; });
+  container.addEventListener('touchend',e=>{ if(!isDragging) return; let endX=e.changedTouches[0].clientX; if(endX-startX>50) prevSlide(); else if(startX-endX>50) nextSlide(); isDragging=false; });
+}
+function goToSlide(idx) { activeSlide = idx; document.querySelector('.slider-track').style.transform = `translateX(-${activeSlide*100}%)`; document.querySelectorAll('.dot').forEach((dot,i)=>dot.classList.toggle('active',i===activeSlide)); }
+function nextSlide() { activeSlide = (activeSlide+1)%slides.length; goToSlide(activeSlide); }
+function prevSlide() { activeSlide = (activeSlide-1+slides.length)%slides.length; goToSlide(activeSlide); }
+setInterval(nextSlide, 5000);
+
+// Filters, products
+function getFiltered() {
+  let items = PRODUCTS.filter(p=>currentFilter==='all'||p.category===currentFilter);
+  if(searchQuery.trim()) items = items.filter(p=>p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  if(currentSort==='price-asc') items.sort((a,b)=>a.price-b.price);
+  if(currentSort==='price-desc') items.sort((a,b)=>b.price-a.price);
+  if(currentSort==='name-asc') items.sort((a,b)=>a.name.localeCompare(b.name));
+  if(currentSort==='popular') items.sort((a,b)=>b.popular-a.popular);
+  return items;
+}
+function renderProducts() {
+  let items = getFiltered();
+  let totalPages = Math.ceil(items.length/8);
+  if(currentPage>totalPages) currentPage=1;
+  let pageItems = items.slice((currentPage-1)*8, currentPage*8);
+  let grid = document.getElementById('productGrid');
+  if(!pageItems.length) { grid.innerHTML='<div style="grid-column:1/-1; text-align:center">Ничего не найдено</div>'; document.getElementById('pagination').innerHTML=''; return; }
+  grid.innerHTML = pageItems.map(p=>{
+    let discount = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100):0;
+    let inCart = cart.some(c=>c.id===p.id);
+    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<button class="product-wishlist" onclick="showToast('В избранное')">❤️</button><img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart(${p.id})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
+  }).join('');
+  let pagHtml = `<button class="pagination-btn" ${currentPage===1?'disabled':''} onclick="changePage(-1)">←</button>`;
+  for(let i=1;i<=totalPages;i++) pagHtml+=`<button class="pagination-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
+  pagHtml+=`<button class="pagination-btn" ${currentPage===totalPages?'disabled':''} onclick="changePage(1)">→</button>`;
+  document.getElementById('pagination').innerHTML = pagHtml;
+}
+function changePage(dir) { currentPage+=dir; renderProducts(); window.scrollTo({top:400,behavior:'smooth'}); }
+function goToPage(p) { currentPage=p; renderProducts(); }
+function handleFilter(f) { currentFilter=f; currentPage=1; renderProducts(); document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.filter===f)); }
+function handleSort(v) { currentSort=v; renderProducts(); }
+document.getElementById('searchInput').addEventListener('input', e=>{ searchQuery=e.target.value; currentPage=1; renderProducts(); });
+document.getElementById('sortSelect').addEventListener('change', e=>handleSort(e.target.value));
+function initFilters() { let cats = [...new Set(PRODUCTS.map(p=>p.category))]; let html = `<button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">Все</button>`; cats.forEach(c=>{ html+=`<button class="filter-btn" data-filter="${c}" onclick="handleFilter('${c}')">${c}</button>`; }); document.getElementById('filterGroup').innerHTML=html; }
+function openProductModal(id) { let p=PRODUCTS.find(p=>p.id===id); if(!p) return; modalProductId=id; modalQty=1; document.getElementById('modalImg').innerHTML=`<img src="${p.image}">`; document.getElementById('modalCategory').innerText=p.category; document.getElementById('modalName').innerText=p.name; document.getElementById('modalRating').innerHTML=`${'★'.repeat(Math.floor(p.rating))} ${p.rating}`; document.getElementById('modalDesc').innerText=p.description; document.getElementById('modalPrice').innerText=p.price.toLocaleString()+' ₽'; document.getElementById('modalOldPrice').innerText=p.oldPrice?p.oldPrice.toLocaleString()+' ₽':''; document.getElementById('modalQty').innerText='1'; document.getElementById('productModal').classList.add('active'); }
+function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+function changeModalQty(d) { modalQty=Math.max(1,modalQty+d); document.getElementById('modalQty').innerText=modalQty; }
+function addFromModal() { if(modalProductId) addToCart(modalProductId, modalQty); closeProductModal(); }
+// Auth
+function openAuthModal(mode) { document.getElementById('authModal').classList.add('active'); }
+function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+function handleAuth(e) { e.preventDefault(); let email = document.getElementById('authEmail').value; currentUser={name:email.split('@')[0], email}; localStorage.setItem('california_user',JSON.stringify(currentUser)); updateUI(); closeAuthModal(); showToast('Добро пожаловать'); }
+function logoutUser() { currentUser=null; localStorage.removeItem('california_user'); updateUI(); }
+function updateUI() { let authDiv=document.getElementById('authButtons'); let greetDiv=document.getElementById('userGreeting'); if(currentUser) { authDiv.style.display='none'; greetDiv.style.display='flex'; document.getElementById('userName').innerText=currentUser.name; } else { authDiv.style.display='flex'; greetDiv.style.display='none'; } }
+function showToast(msg) { alert(msg); }
+loadCart(); initFilters(); renderProducts(); buildSlider(); updateUI();
+document.getElementById('cartDrawerOverlay').addEventListener('click',(e)=>{ if(e.target===document.getElementById('cartDrawerOverlay')) closeCartDrawer(); });
+</script>
+</body>
+</html>
