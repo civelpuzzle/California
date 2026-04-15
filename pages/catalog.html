@@ -401,14 +401,6 @@ ul { list-style: none; }
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.product-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  margin-bottom: 8px;
-}
-.stars { color: #FBBF24; }
 .product-price-row {
   display: flex;
   align-items: baseline;
@@ -678,8 +670,13 @@ ul { list-style: none; }
   font-weight: 700;
   margin-top: 8px;
 }
-/* Стили для форм в модалках (авторизация, оформление) */
-.modal input, .modal textarea, .modal select {
+
+/* AUTH MODAL (унифицирован) */
+.auth-modal {
+  max-width: 420px;
+  padding: 28px;
+}
+.auth-modal input {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
@@ -687,11 +684,7 @@ ul { list-style: none; }
   border-radius: var(--radius-sm);
   font-family: inherit;
 }
-.modal textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-.modal button[type="submit"] {
+.auth-modal button[type="submit"] {
   width: 100%;
   padding: 12px;
   background: var(--primary);
@@ -700,10 +693,32 @@ ul { list-style: none; }
   font-weight: 700;
   margin-top: 12px;
 }
-.checkout-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+
+/* CHECKOUT MODAL */
+.checkout-modal {
+  max-width: 500px;
+  padding: 28px;
+}
+.checkout-modal input, .checkout-modal textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+}
+.checkout-modal textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.checkout-modal button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  margin-top: 12px;
 }
 
 /* FOOTER */
@@ -765,7 +780,6 @@ ul { list-style: none; }
 <header class="header">
   <div class="header-top">
     <a href="catalog.html" class="logo">
-      <!-- <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg> -->
       <img src="../assets/logoNoFone.png" alt="logo" class="logotype">
       California
     </a>
@@ -843,7 +857,6 @@ ul { list-style: none; }
       <div class="modal-product-info">
         <div id="modalCategory" class="product-category"></div>
         <h2 id="modalName" style="margin:0"></h2>
-        <div id="modalRating" class="product-rating"></div>
         <p id="modalDesc" style="color:var(--text-medium); font-size:0.9rem;"></p>
         <div class="product-price-row">
           <span id="modalPrice" class="product-price"></span>
@@ -862,7 +875,7 @@ ul { list-style: none; }
 
 <!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="checkoutModal">
-  <div class="modal" style="max-width:500px; padding:28px;">
+  <div class="modal checkout-modal">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
     <h2 style="margin-bottom:20px;">Оформление заказа</h2>
     <form id="checkoutForm" class="checkout-form" onsubmit="submitOrder(event)">
@@ -875,14 +888,13 @@ ul { list-style: none; }
   </div>
 </div>
 
-<!-- AUTH MODAL -->
+<!-- AUTH MODAL (унифицирован) -->
 <div class="modal-overlay" id="authModal">
-  <div class="modal" style="max-width:400px; padding:30px;">
+  <div class="modal auth-modal">
     <button class="modal-close" onclick="closeAuthModal()">✕</button>
     <h2 id="authTitle">Вход</h2>
     <form id="authForm" onsubmit="handleAuth(event)">
-      <div id="nameGroup" style="display:none;"><input type="text" id="authName" placeholder="Имя"></div>
-      <input type="email" id="authEmail" placeholder="Email" required>
+      <input type="text" id="authLogin" placeholder="Логин" required>
       <input type="password" id="authPassword" placeholder="Пароль" required>
       <button type="submit" id="authSubmitBtn">Войти</button>
     </form>
@@ -906,23 +918,23 @@ ul { list-style: none; }
 </footer>
 
 <script>
-// ---------- ТОВАРЫ С ЛОКАЛЬНЫМИ КАРТИНКАМИ И НОВЫМИ ОПИСАНИЯМИ ----------
+// ТОВАРЫ
 const PRODUCTS = [
-  { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"../assets/iphone15promax.jpg", description:"6.7″ Super Retina XDR, титановый корпус, чип A17 Pro, 48MP главная камера с 5-кратным зумом, до 29 часов видео.", category:"smartphones", badge:"hit", rating:4.9, reviews:342, popular:98 },
-  { id:2, name:"iPhone 15 Pro 128GB", price:119990, oldPrice:134990, image:"../assets/iphone15pro.jpg", description:"6.1″ Super Retina XDR, титан, A17 Pro, 48MP камера с 3-кратным зумом, USB-C 3.0, Action button.", category:"smartphones", badge:"hit", rating:4.8, reviews:289, popular:95 },
-  { id:3, name:"iPhone 15 Plus 128GB", price:99990, oldPrice:112990, image:"../assets/iphone15plus.jpg", description:"6.7″ Super Retina XDR, алюминий, A16 Bionic, 48MP основная камера, Dynamic Island, отличное время работы.", category:"smartphones", badge:"sale", rating:4.7, reviews:210, popular:88 },
-  { id:4, name:"iPhone 14 128GB", price:74990, oldPrice:89990, image:"../assets/iphone14.jpg", description:"6.1″ Super Retina XDR, A15 Bionic, улучшенная фронтальная камера, режим действия при съёмке видео.", category:"smartphones", badge:"sale", rating:4.6, reviews:512, popular:86 },
-  { id:5, name:"MacBook Air M3 13″", price:129990, oldPrice:null, image:"../assets/macbookairm313.jpg", description:"13.6″ Liquid Retina, чип M3 (8‑ядерный CPU, 10‑ядерный GPU), до 18 часов работы, безвентиляторный дизайн.", category:"laptops", badge:"new", rating:4.9, reviews:178, popular:96 },
-  { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"../assets/macbookprom314.jpg", description:"14.2″ Liquid Retina XDR, M3 Pro (12‑ядерный CPU, 18‑ядерный GPU), до 17 часов, HDMI, слот SDXC.", category:"laptops", badge:"hit", rating:4.9, reviews:143, popular:92 },
-  { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"../assets/ipadm4pro.jpg", description:"11″ Ultra Retina XDR, чип M4, поддержка Apple Pencil Pro, Face ID, Thunderbolt / USB 4.", category:"tablets", badge:"new", rating:4.8, reviews:112, popular:89 },
-  { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"../assets/ipadm4pro.jpg", description:"10.9″ Liquid Retina, M2, поддержка Apple Pencil USB-C, Touch ID, до 10 часов работы.", category:"tablets", badge:"sale", rating:4.7, reviews:234, popular:82 },
-  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"../assets/aplvat.png", description:"49 мм титановый корпус, дисплей 3000 нит, S9 SiP, двойной тап, до 36 часов автономности.", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
-  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"../assets/aplvat.png", description:"41 или 45 мм, S9 SiP, яркий дисплей, жест двойного касания, отслеживание здоровья.", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
-  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"../assets/airpods.png", description:"Активное шумоподавление, адаптивный звук, чип H2, кейс с динамиком и поддержкой Find My.", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
-  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"../assets/airpods.png", description:"Накладные наушники с активным шумоподавлением, пространственным аудио, алюминиевая конструкция.", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
+  { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"../assets/iphone15promax.jpg", description:"6.7″ Super Retina XDR, титановый корпус, чип A17 Pro, 48MP главная камера с 5-кратным зумом, до 29 часов видео.", category:"smartphones", badge:"hit", popular:98 },
+  { id:2, name:"iPhone 15 Pro 128GB", price:119990, oldPrice:134990, image:"../assets/iphone15pro.jpg", description:"6.1″ Super Retina XDR, титан, A17 Pro, 48MP камера с 3-кратным зумом, USB-C 3.0, Action button.", category:"smartphones", badge:"hit", popular:95 },
+  { id:3, name:"iPhone 15 Plus 128GB", price:99990, oldPrice:112990, image:"../assets/iphone15plus.jpg", description:"6.7″ Super Retina XDR, алюминий, A16 Bionic, 48MP основная камера, Dynamic Island, отличное время работы.", category:"smartphones", badge:"sale", popular:88 },
+  { id:4, name:"iPhone 14 128GB", price:74990, oldPrice:89990, image:"../assets/iphone14.jpg", description:"6.1″ Super Retina XDR, A15 Bionic, улучшенная фронтальная камера, режим действия при съёмке видео.", category:"smartphones", badge:"sale", popular:86 },
+  { id:5, name:"MacBook Air M3 13″", price:129990, oldPrice:null, image:"../assets/macbookairm313.jpg", description:"13.6″ Liquid Retina, чип M3 (8‑ядерный CPU, 10‑ядерный GPU), до 18 часов работы, безвентиляторный дизайн.", category:"laptops", badge:"new", popular:96 },
+  { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"../assets/macbookprom314.jpg", description:"14.2″ Liquid Retina XDR, M3 Pro (12‑ядерный CPU, 18‑ядерный GPU), до 17 часов, HDMI, слот SDXC.", category:"laptops", badge:"hit", popular:92 },
+  { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"../assets/ipadm4pro.jpg", description:"11″ Ultra Retina XDR, чип M4, поддержка Apple Pencil Pro, Face ID, Thunderbolt / USB 4.", category:"tablets", badge:"new", popular:89 },
+  { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"../assets/ipadm4pro.jpg", description:"10.9″ Liquid Retina, M2, поддержка Apple Pencil USB-C, Touch ID, до 10 часов работы.", category:"tablets", badge:"sale", popular:82 },
+  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"../assets/aplvat.png", description:"49 мм титановый корпус, дисплей 3000 нит, S9 SiP, двойной тап, до 36 часов автономности.", category:"wearables", badge:"sale", popular:94 },
+  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"../assets/aplvat.png", description:"41 или 45 мм, S9 SiP, яркий дисплей, жест двойного касания, отслеживание здоровья.", category:"wearables", badge:"sale", popular:88 },
+  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"../assets/airpods.png", description:"Активное шумоподавление, адаптивный звук, чип H2, кейс с динамиком и поддержкой Find My.", category:"audio", badge:"hit", popular:99 },
+  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"../assets/airpods.png", description:"Накладные наушники с активным шумоподавлением, пространственным аудио, алюминиевая конструкция.", category:"audio", badge:"sale", popular:85 }
 ];
 
-// ---------- КОРЗИНА ----------
+// КОРЗИНА
 let cart = [];
 let currentUser = null;
 let currentFilter = "all";
@@ -1041,7 +1053,7 @@ function openCartDrawer() { document.getElementById('cartDrawerOverlay').classLi
 function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
 document.getElementById('cartIconBtn').onclick = openCartDrawer;
 
-// ---------- ОФОРМЛЕНИЕ ЗАКАЗА ----------
+// ОФОРМЛЕНИЕ ЗАКАЗА
 function openCheckoutModal() {
   if(!cart.length) {
     showToast("Корзина пуста");
@@ -1070,7 +1082,7 @@ function submitOrder(e) {
   renderProducts();
 }
 
-// ---------- СЛАЙДЕР ----------
+// СЛАЙДЕР
 const slides = [
   { badge:"🔥 Акция", title:"Скидка 15% на два iPhone", desc:"Купите два iPhone и получите скидку", img:"../assets/iphone15promax.jpg" },
   { badge:"✨ Новинка", title:"MacBook Air M3", desc:"Сверхпроизводительный ноутбук", img:"../assets/macbookairm313.jpg" },
@@ -1101,7 +1113,7 @@ function nextSlide() { activeSlide = (activeSlide+1)%slides.length; goToSlide(ac
 function prevSlide() { activeSlide = (activeSlide-1+slides.length)%slides.length; goToSlide(activeSlide); }
 setInterval(nextSlide, 5000);
 
-// ---------- ФИЛЬТРАЦИЯ И ОТОБРАЖЕНИЕ ТОВАРОВ ----------
+// ФИЛЬТРАЦИЯ И ОТОБРАЖЕНИЕ ТОВАРОВ
 function getFiltered() {
   let items = PRODUCTS.filter(p=>currentFilter==='all'||p.category===currentFilter);
   if(searchQuery.trim()) items = items.filter(p=>p.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -1121,8 +1133,7 @@ function renderProducts() {
   grid.innerHTML = pageItems.map(p=>{
     let discount = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100):0;
     let inCart = cart.some(c=>c.id===p.id);
-    // <button class="product-wishlist" onclick="showToast('Избранное в разработке')">❤️</button>
-    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
+    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
   }).join('');
   let pagHtml = `<button class="pagination-btn" ${currentPage===1?'disabled':''} onclick="changePage(-1)">←</button>`;
   for(let i=1;i<=totalPages;i++) pagHtml+=`<button class="pagination-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
@@ -1136,13 +1147,12 @@ function handleSort(v) { currentSort=v; renderProducts(); }
 document.getElementById('searchInput').addEventListener('input', e=>{ searchQuery=e.target.value; currentPage=1; renderProducts(); });
 document.getElementById('sortSelect').addEventListener('change', e=>handleSort(e.target.value));
 function initFilters() { let cats = [...new Set(PRODUCTS.map(p=>p.category))]; let html = `<button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">Все</button>`; cats.forEach(c=>{ html+=`<button class="filter-btn" data-filter="${c}" onclick="handleFilter('${c}')">${c}</button>`; }); document.getElementById('filterGroup').innerHTML=html; }
-// Применение фильтра из футера с прокруткой
 function applyCategoryFilter(category) {
   handleFilter(category);
   document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ---------- МОДАЛЬНОЕ ОКНО ТОВАРА ----------
+// МОДАЛЬНОЕ ОКНО ТОВАРА
 function openProductModal(id) {
   let p=PRODUCTS.find(p=>p.id===id);
   if(!p) return;
@@ -1151,7 +1161,6 @@ function openProductModal(id) {
   document.getElementById('modalImg').innerHTML=`<img src="${p.image}" alt="${p.name}">`;
   document.getElementById('modalCategory').innerText=p.category;
   document.getElementById('modalName').innerText=p.name;
-  document.getElementById('modalRating').innerHTML=`${'★'.repeat(Math.floor(p.rating))} ${p.rating}`;
   document.getElementById('modalDesc').innerText=p.description;
   document.getElementById('modalPrice').innerText=p.price.toLocaleString()+' ₽';
   document.getElementById('modalOldPrice').innerText=p.oldPrice?p.oldPrice.toLocaleString()+' ₽':'';
@@ -1166,7 +1175,7 @@ function addFromModal() {
   closeProductModal();
 }
 
-// ---------- АВТОРИЗАЦИЯ (исправленная) ----------
+// АВТОРИЗАЦИЯ (только логин + пароль)
 function loadUser() {
   try {
     const saved = localStorage.getItem('california_user');
@@ -1182,8 +1191,8 @@ function updateAuthUI() {
   if (currentUser) {
     authDiv.style.display = 'none';
     greetDiv.style.display = 'flex';
-    document.getElementById('userName').textContent = currentUser.name;
-    document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('userName').textContent = currentUser.login;
+    document.getElementById('userAvatar').textContent = currentUser.login.charAt(0).toUpperCase();
   } else {
     authDiv.style.display = 'flex';
     greetDiv.style.display = 'none';
@@ -1193,24 +1202,24 @@ function openAuthModal(mode) {
   authMode = mode;
   document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация';
   document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
-  document.getElementById('nameGroup').style.display = mode === 'register' ? 'block' : 'none';
-  document.getElementById('authSwitch').innerHTML = mode === 'login'
-    ? 'Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a>'
-    : 'Уже есть аккаунт? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Войти</a>';
   document.getElementById('authModal').classList.add('active');
 }
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
 function handleAuth(e) {
   e.preventDefault();
-  const email = document.getElementById('authEmail').value;
+  const login = document.getElementById('authLogin').value.trim();
   const password = document.getElementById('authPassword').value;
-  const name = document.getElementById('authName').value;
-  currentUser = { name: name || email.split('@')[0], email: email };
+  if (!login || !password) {
+    showToast('Заполните все поля');
+    return;
+  }
+  // Для простоты считаем, что пользователь успешно "зарегистрировался" или "вошёл"
+  currentUser = { login: login };
   localStorage.setItem('california_user', JSON.stringify(currentUser));
   updateAuthUI();
   closeAuthModal();
-  showToast('Добро пожаловать!');
+  showToast(`Добро пожаловать, ${login}!`);
 }
 function logoutUser() {
   if (confirm('Выйти из аккаунта?')) {
@@ -1221,7 +1230,7 @@ function logoutUser() {
 }
 function showToast(msg) { alert(msg); }
 
-// ---------- ПАРАМЕТР ИЗ URL (для фильтрации с других страниц) ----------
+// ПАРАМЕТР ИЗ URL
 function getUrlParam() {
   const params = new URLSearchParams(window.location.search);
   const category = params.get('category');
@@ -1231,7 +1240,7 @@ function getUrlParam() {
   }
 }
 
-// ---------- ЗАПУСК ----------
+// ЗАПУСК
 getUrlParam();
 loadCart();
 initFilters();
