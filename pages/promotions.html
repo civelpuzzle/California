@@ -40,6 +40,35 @@ body {
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; border: none; font-family: inherit; background: none; }
 
+/* TOAST уведомления */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #1A1A2E;
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(108,63,197,0.16);
+  animation: slideIn 0.2s ease-out;
+  max-width: 300px;
+  backdrop-filter: blur(8px);
+  background: rgba(26, 26, 46, 0.95);
+  border-left: 4px solid var(--primary);
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 /* HEADER */
 .header {
   background: var(--bg-white);
@@ -262,7 +291,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   margin-top: 12px;
 }
 
-/* MODALS (унифицированы) */
+/* MODALS */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -408,12 +437,11 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   display: block;
   font-size: 0.85rem;
   padding: 4px 0;
-  transition: color 0.2s, text-decoration 0.2s;
+  transition: color 0.2s;
   cursor: pointer;
 }
 .footer-col a:hover {
   color: white;
-  text-decoration: underline;
 }
 .footer-bottom {
   text-align: center;
@@ -432,6 +460,8 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 </style>
 </head>
 <body>
+
+<div class="toast-container" id="toastContainer"></div>
 
 <header class="header">
   <div class="header-top">
@@ -493,7 +523,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   </div>
 </div>
 
-<!-- AUTH MODAL (унифицирован) -->
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal auth-modal">
     <button class="modal-close" onclick="closeAuthModal()">✕</button>
@@ -523,6 +553,20 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 </footer>
 
 <script>
+// TOAST УВЕДОМЛЕНИЯ
+function showToast(message, duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
 // Данные акций
 const PROMOTIONS = [
   { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"../assets/iphone15promax.jpg", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
@@ -607,7 +651,7 @@ function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classL
 // Оформление заказа
 function openCheckoutModal() {
   if(!cart.length) {
-    alert("Корзина пуста");
+    showToast("Корзина пуста");
     return;
   }
   document.getElementById('checkoutModal').classList.add('active');
@@ -622,17 +666,17 @@ function submitOrder(e) {
   const email = document.getElementById('checkoutEmail').value;
   const address = document.getElementById('checkoutAddress').value;
   if(!name || !phone || !email || !address) {
-    alert("Заполните все поля");
+    showToast("Заполните все поля");
     return;
   }
-  alert(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят.\nДоставка по адресу: ${address}\nОжидайте звонка на ${phone}`);
+  showToast(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
   cart = [];
   saveCart();
   closeCheckoutModal();
   closeCartDrawer();
 }
 
-// Авторизация (только логин + пароль)
+// Авторизация
 function loadUser() {
   try {
     const saved = localStorage.getItem('california_user');
@@ -668,14 +712,14 @@ function handleAuth(e) {
   const login = document.getElementById('authLogin').value.trim();
   const password = document.getElementById('authPassword').value;
   if (!login || !password) {
-    alert('Заполните все поля');
+    showToast('Заполните все поля');
     return;
   }
   currentUser = { login: login };
   localStorage.setItem('california_user', JSON.stringify(currentUser));
   updateAuthUI();
   closeAuthModal();
-  alert(`Добро пожаловать, ${login}!`);
+  showToast(`Добро пожаловать, ${login}!`);
 }
 function logoutUser() {
   if (confirm('Выйти?')) {

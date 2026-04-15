@@ -26,6 +26,11 @@ body {
   line-height: 1.6;
 }
 
+/* Убираем подчёркивания у всех ссылок */
+a {
+  text-decoration: none;
+}
+
 /* Шапка */
 .header {
   background: var(--bg-white);
@@ -108,12 +113,11 @@ p {
 }
 .footer a {
   color: rgba(255,255,255,0.7);
-  text-decoration: none;
-  transition: color 0.2s, text-decoration 0.2s;
+  transition: color 0.2s;
 }
 .footer a:hover {
   color: white;
-  text-decoration: underline;
+  text-decoration: none; /* убираем подчёркивание при наведении */
 }
 
 @media (max-width: 768px) {

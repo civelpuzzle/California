@@ -49,6 +49,35 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 input, select { font-family: inherit; }
 ul { list-style: none; }
 
+/* TOAST уведомления */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  background: #1A1A2E;
+  color: white;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  animation: slideIn 0.2s ease-out;
+  max-width: 300px;
+  backdrop-filter: blur(8px);
+  background: rgba(26, 26, 46, 0.95);
+  border-left: 4px solid var(--primary);
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
 /* HEADER */
 .header {
   background: var(--bg-white);
@@ -671,7 +700,7 @@ ul { list-style: none; }
   margin-top: 8px;
 }
 
-/* AUTH MODAL (унифицирован) */
+/* AUTH MODAL */
 .auth-modal {
   max-width: 420px;
   padding: 28px;
@@ -743,12 +772,11 @@ ul { list-style: none; }
   display: block;
   font-size: 0.85rem;
   padding: 4px 0;
-  transition: color 0.2s, text-decoration 0.2s;
+  transition: color 0.2s;
   cursor: pointer;
 }
 .footer-col a:hover {
   color: white;
-  text-decoration: underline;
 }
 .footer-bottom {
   text-align: center;
@@ -776,6 +804,8 @@ ul { list-style: none; }
 </style>
 </head>
 <body>
+
+<div class="toast-container" id="toastContainer"></div>
 
 <header class="header">
   <div class="header-top">
@@ -888,7 +918,7 @@ ul { list-style: none; }
   </div>
 </div>
 
-<!-- AUTH MODAL (унифицирован) -->
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal auth-modal">
     <button class="modal-close" onclick="closeAuthModal()">✕</button>
@@ -918,6 +948,20 @@ ul { list-style: none; }
 </footer>
 
 <script>
+// TOAST УВЕДОМЛЕНИЯ
+function showToast(message, duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100%)';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
 // ТОВАРЫ
 const PRODUCTS = [
   { id:1, name:"iPhone 15 Pro Max 256GB", price:149990, oldPrice:169990, image:"../assets/iphone15promax.jpg", description:"6.7″ Super Retina XDR, титановый корпус, чип A17 Pro, 48MP главная камера с 5-кратным зумом, до 29 часов видео.", category:"smartphones", badge:"hit", popular:98 },
@@ -1074,7 +1118,7 @@ function submitOrder(e) {
     showToast("Заполните все поля");
     return;
   }
-  alert(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят.\nДоставка по адресу: ${address}\nОжидайте звонка на ${phone}`);
+  showToast(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
   cart = [];
   saveCart();
   closeCheckoutModal();
@@ -1133,7 +1177,7 @@ function renderProducts() {
   grid.innerHTML = pageItems.map(p=>{
     let discount = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100):0;
     let inCart = cart.some(c=>c.id===p.id);
-    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
+    return `<div class="product-card"><div class="product-card-img"><img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
   }).join('');
   let pagHtml = `<button class="pagination-btn" ${currentPage===1?'disabled':''} onclick="changePage(-1)">←</button>`;
   for(let i=1;i<=totalPages;i++) pagHtml+=`<button class="pagination-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
@@ -1175,7 +1219,7 @@ function addFromModal() {
   closeProductModal();
 }
 
-// АВТОРИЗАЦИЯ (только логин + пароль)
+// АВТОРИЗАЦИЯ
 function loadUser() {
   try {
     const saved = localStorage.getItem('california_user');
@@ -1214,7 +1258,6 @@ function handleAuth(e) {
     showToast('Заполните все поля');
     return;
   }
-  // Для простоты считаем, что пользователь успешно "зарегистрировался" или "вошёл"
   currentUser = { login: login };
   localStorage.setItem('california_user', JSON.stringify(currentUser));
   updateAuthUI();
@@ -1228,7 +1271,6 @@ function logoutUser() {
     updateAuthUI();
   }
 }
-function showToast(msg) { alert(msg); }
 
 // ПАРАМЕТР ИЗ URL
 function getUrlParam() {
