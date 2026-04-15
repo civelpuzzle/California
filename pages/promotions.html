@@ -423,6 +423,10 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   .footer-content { grid-template-columns: 1fr; gap: 24px; }
   .promo-grid { grid-template-columns: 1fr; }
 }
+.logotype {
+  width: 65px;
+  height: 65px;
+}
 </style>
 </head>
 <body>
@@ -430,7 +434,8 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 <header class="header">
   <div class="header-top">
     <a href="catalog.html" class="logo">
-      <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg>
+      <!-- <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg> -->
+      <img src="../assets/logoNoFone.png" alt="logo" class="logotype">
       California
     </a>
     <nav class="nav">
@@ -522,8 +527,8 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 const PROMOTIONS = [
   { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"../assets/iphone15promax.jpg", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
   { title:"MacBook Air M3 — бесплатная доставка", text:"Закажите MacBook Air на чипе M3 и получите бесплатную экспресс-доставку + подарочный чехол.", image:"../assets/macbookairm313.jpg", date:"10.04 – 25.04", models:"MacBook Air 13″ M3, MacBook Air 15″ M3" },
-  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"../assets/airpods-2-2019.jpg", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
-  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"../assets/aplvat.jpg", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
+  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"../assets/airpods.png", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
+  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"../assets/aplvat.png", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
 ];
 
 // Глобальное состояние

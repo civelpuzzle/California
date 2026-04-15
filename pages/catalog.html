@@ -754,6 +754,10 @@ ul { list-style: none; }
   .modal-product { grid-template-columns: 1fr; }
   .modal-product-img { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
 }
+.logotype {
+  width: 65px;
+  height: 65px;
+}
 </style>
 </head>
 <body>
@@ -761,7 +765,8 @@ ul { list-style: none; }
 <header class="header">
   <div class="header-top">
     <a href="catalog.html" class="logo">
-      <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg>
+      <!-- <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="20" height="12" rx="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.5)"/></svg> -->
+      <img src="../assets/logoNoFone.png" alt="logo" class="logotype">
       California
     </a>
     <nav class="nav">
@@ -911,10 +916,10 @@ const PRODUCTS = [
   { id:6, name:"MacBook Pro 14″ M3 Pro", price:199990, oldPrice:229990, image:"../assets/macbookprom314.jpg", description:"14.2″ Liquid Retina XDR, M3 Pro (12‑ядерный CPU, 18‑ядерный GPU), до 17 часов, HDMI, слот SDXC.", category:"laptops", badge:"hit", rating:4.9, reviews:143, popular:92 },
   { id:7, name:"iPad Pro 11″ M4", price:109990, oldPrice:null, image:"../assets/ipadm4pro.jpg", description:"11″ Ultra Retina XDR, чип M4, поддержка Apple Pencil Pro, Face ID, Thunderbolt / USB 4.", category:"tablets", badge:"new", rating:4.8, reviews:112, popular:89 },
   { id:8, name:"iPad Air M2 10.9″", price:79990, oldPrice:89990, image:"../assets/ipadm4pro.jpg", description:"10.9″ Liquid Retina, M2, поддержка Apple Pencil USB-C, Touch ID, до 10 часов работы.", category:"tablets", badge:"sale", rating:4.7, reviews:234, popular:82 },
-  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"../assets/aplvat.jpg", description:"49 мм титановый корпус, дисплей 3000 нит, S9 SiP, двойной тап, до 36 часов автономности.", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
-  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"../assets/aplvat.jpg", description:"41 или 45 мм, S9 SiP, яркий дисплей, жест двойного касания, отслеживание здоровья.", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
-  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"../assets/airpods-2-2019.jpg", description:"Активное шумоподавление, адаптивный звук, чип H2, кейс с динамиком и поддержкой Find My.", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
-  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"../assets/airpods-2-2019.jpg", description:"Накладные наушники с активным шумоподавлением, пространственным аудио, алюминиевая конструкция.", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
+  { id:9, name:"Apple Watch Ultra 2", price:79990, oldPrice:89990, image:"../assets/aplvat.png", description:"49 мм титановый корпус, дисплей 3000 нит, S9 SiP, двойной тап, до 36 часов автономности.", category:"wearables", badge:"sale", rating:4.9, reviews:201, popular:94 },
+  { id:10, name:"Apple Watch Series 9", price:44990, oldPrice:49990, image:"../assets/aplvat.png", description:"41 или 45 мм, S9 SiP, яркий дисплей, жест двойного касания, отслеживание здоровья.", category:"wearables", badge:"sale", rating:4.7, reviews:389, popular:88 },
+  { id:11, name:"AirPods Pro 2 USB-C", price:24990, oldPrice:29990, image:"../assets/airpods.png", description:"Активное шумоподавление, адаптивный звук, чип H2, кейс с динамиком и поддержкой Find My.", category:"audio", badge:"hit", rating:4.9, reviews:1123, popular:99 },
+  { id:12, name:"AirPods Max", price:54990, oldPrice:62990, image:"../assets/airpods.png", description:"Накладные наушники с активным шумоподавлением, пространственным аудио, алюминиевая конструкция.", category:"audio", badge:"sale", rating:4.8, reviews:401, popular:85 }
 ];
 
 // ---------- КОРЗИНА ----------
@@ -1069,7 +1074,7 @@ function submitOrder(e) {
 const slides = [
   { badge:"🔥 Акция", title:"Скидка 15% на два iPhone", desc:"Купите два iPhone и получите скидку", img:"../assets/iphone15promax.jpg" },
   { badge:"✨ Новинка", title:"MacBook Air M3", desc:"Сверхпроизводительный ноутбук", img:"../assets/macbookairm313.jpg" },
-  { badge:"🎧 Лучшая цена", title:"AirPods Pro 2", desc:"Кэшбэк 5000₽", img:"../assets/airpods-2-2019.jpg" }
+  { badge:"🎧 Лучшая цена", title:"AirPods Pro 2", desc:"Кэшбэк 5000₽", img:"../assets/airpods.png" }
 ];
 function buildSlider() {
   let track = document.getElementById('sliderTrack');
@@ -1116,7 +1121,8 @@ function renderProducts() {
   grid.innerHTML = pageItems.map(p=>{
     let discount = p.oldPrice ? Math.round((1-p.price/p.oldPrice)*100):0;
     let inCart = cart.some(c=>c.id===p.id);
-    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<button class="product-wishlist" onclick="showToast('Избранное в разработке')">❤️</button><img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
+    // <button class="product-wishlist" onclick="showToast('Избранное в разработке')">❤️</button>
+    return `<div class="product-card"><div class="product-card-img">${p.badge?`<span class="product-badge badge-${p.badge}">${p.badge==='sale'?'Скидка':p.badge==='new'?'Новинка':'Хит'}</span>`:''}<img src="${p.image}"></div><div class="product-card-body"><div class="product-category">${p.category}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-rating"><span class="stars">${'★'.repeat(Math.floor(p.rating))}${p.rating%1>=0.5?'½':''}${'☆'.repeat(5-Math.ceil(p.rating))}</span> ${p.rating} (${p.reviews})</div><div class="product-price-row"><span class="product-price">${p.price.toLocaleString()} ₽</span>${p.oldPrice?`<span class="product-old-price">${p.oldPrice.toLocaleString()} ₽</span>`:''}${discount?`<span>-${discount}%</span>`:''}</div><div class="product-actions"><button class="btn-add-cart ${inCart?'added':''}" onclick="addToCart({id:${p.id}, name:'${p.name.replace(/'/g, "\\'")}', price:${p.price}, image:'${p.image}'})">🛒 ${inCart?'В корзине':'Купить'}</button><button class="btn-details" onclick="openProductModal(${p.id})">Детали</button></div></div></div>`;
   }).join('');
   let pagHtml = `<button class="pagination-btn" ${currentPage===1?'disabled':''} onclick="changePage(-1)">←</button>`;
   for(let i=1;i<=totalPages;i++) pagHtml+=`<button class="pagination-btn ${i===currentPage?'active':''}" onclick="goToPage(${i})">${i}</button>`;
