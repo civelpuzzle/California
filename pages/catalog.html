@@ -104,7 +104,6 @@ ul { list-style: none; }
   align-items: center;
   gap: 8px;
 }
-.logo svg { width: 32px; height: 32px; }
 .nav { display: flex; gap: 8px; }
 .nav-link {
   padding: 8px 18px;
@@ -172,6 +171,10 @@ ul { list-style: none; }
   background: var(--primary-lighter);
   border-radius: var(--radius-sm);
   cursor: pointer;
+}
+.user-greeting:hover {
+  background: var(--primary-light);
+  color: white;
 }
 .user-avatar {
   width: 28px;
@@ -827,7 +830,7 @@ ul { list-style: none; }
         <button class="btn-login" onclick="openAuthModal('login')">Вход</button>
         <button class="btn-register" onclick="openAuthModal('register')">Регистрация</button>
       </div>
-      <div id="userGreeting" style="display:none;" class="user-greeting" onclick="logoutUser()">
+      <div id="userGreeting" style="display:none;" class="user-greeting" onclick="goToProfile()">
         <div class="user-avatar" id="userAvatar">U</div>
         <span id="userName">User</span>
       </div>
@@ -990,6 +993,17 @@ let modalQty = 1;
 let activeSlide = 0;
 let authMode = 'login';
 
+// Сохранение заказа в историю
+function saveOrderToStorage(orderData) {
+  let orders = [];
+  try {
+    const saved = localStorage.getItem('california_orders');
+    if (saved) orders = JSON.parse(saved);
+  } catch(e) {}
+  orders.push(orderData);
+  localStorage.setItem('california_orders', JSON.stringify(orders));
+}
+
 function loadCart() {
   try {
     let saved = localStorage.getItem('california_cart');
@@ -1118,6 +1132,21 @@ function submitOrder(e) {
     showToast("Заполните все поля");
     return;
   }
+  
+  // Сохраняем заказ
+  const order = {
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    name: name,
+    phone: phone,
+    email: email,
+    address: address,
+    total: getCartTotal(),
+    items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
+    user: currentUser ? currentUser.login : 'guest'
+  };
+  saveOrderToStorage(order);
+  
   showToast(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
   cart = [];
   saveCart();
@@ -1226,8 +1255,11 @@ function loadUser() {
     if (saved) {
       currentUser = JSON.parse(saved);
       updateAuthUI();
+    } else {
+      currentUser = null;
+      updateAuthUI();
     }
-  } catch(e) {}
+  } catch(e) { currentUser = null; updateAuthUI(); }
 }
 function updateAuthUI() {
   const authDiv = document.getElementById('authButtons');
@@ -1240,6 +1272,13 @@ function updateAuthUI() {
   } else {
     authDiv.style.display = 'flex';
     greetDiv.style.display = 'none';
+  }
+}
+function goToProfile() {
+  if (currentUser) {
+    window.location.href = 'profile.html';
+  } else {
+    showToast('Сначала войдите в аккаунт');
   }
 }
 function openAuthModal(mode) {
@@ -1265,12 +1304,25 @@ function handleAuth(e) {
   showToast(`Добро пожаловать, ${login}!`);
 }
 function logoutUser() {
-  if (confirm('Выйти из аккаунта?')) {
+  // Функция больше не используется на клике, оставлена для возможных вызовов
+  if (currentUser) {
     currentUser = null;
     localStorage.removeItem('california_user');
     updateAuthUI();
+    showToast('Вы вышли из аккаунта');
   }
 }
+
+// Синхронизация между вкладками
+window.addEventListener('storage', (e) => {
+  if (e.key === 'california_user') {
+    loadUser();
+  }
+  if (e.key === 'california_cart') {
+    loadCart();
+    renderProducts();
+  }
+});
 
 // ПАРАМЕТР ИЗ URL
 function getUrlParam() {

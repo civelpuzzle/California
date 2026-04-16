@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>California — Акции</title>
+<title>Мой профиль — California</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
 
@@ -26,21 +26,23 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --transition: 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   --transition-fast: 0.2s ease;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg-light);
   color: var(--text-dark);
   line-height: 1.5;
+  display: flex;
+  flex-direction: column;
 }
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; border: none; font-family: inherit; background: none; }
 
-/* TOAST уведомления */
+/* TOAST */
 .toast-container {
   position: fixed;
   bottom: 20px;
@@ -179,6 +181,132 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-weight: 700;
 }
 
+/* MAIN */
+.main-content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 24px;
+  width: 100%;
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 40px;
+  background: var(--bg-white);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.profile-avatar-large {
+  width: 100px;
+  height: 100px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+}
+.profile-info h1 {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+.profile-info p {
+  color: var(--text-light);
+}
+.profile-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+.profile-action-btn {
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+.btn-logout {
+  background: var(--bg-gray);
+  color: var(--text-medium);
+}
+.btn-logout:hover {
+  background: var(--border);
+}
+.btn-delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.btn-delete:hover {
+  background: #fecaca;
+}
+.orders-section {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+}
+.orders-section h2 {
+  margin-bottom: 24px;
+  font-size: 1.4rem;
+}
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.order-card {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  transition: var(--transition-fast);
+}
+.order-card:hover {
+  box-shadow: var(--shadow-md);
+}
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.order-id {
+  font-weight: 700;
+  color: var(--primary);
+}
+.order-date {
+  color: var(--text-light);
+  font-size: 0.85rem;
+}
+.order-details {
+  margin: 12px 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+.order-items {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+}
+.order-total {
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-align: right;
+}
+.empty-orders {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-light);
+}
+.empty-orders a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
 /* CART DRAWER */
 .drawer-overlay {
   position: fixed;
@@ -218,80 +346,25 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.drawer-item {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: var(--bg-light);
-  border-radius: var(--radius-sm);
-}
-.drawer-item-img {
-  width: 70px;
-  height: 70px;
-  background: var(--bg-gray);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-}
-.drawer-item-img img { max-height: 60px; max-width: 60px; object-fit: contain; }
-.drawer-item-info { flex: 1; }
-.drawer-item-name { font-weight: 600; font-size: 0.85rem; }
-.drawer-item-price { font-weight: 700; margin-top: 4px; }
-.drawer-qty {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-.drawer-qty button {
-  width: 28px;
-  height: 28px;
-  background: var(--border);
-  border-radius: 6px;
-  font-weight: bold;
 }
 .drawer-total {
   padding: 20px;
   border-top: 1px solid var(--border);
   font-weight: 800;
-  font-size: 1.2rem;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  gap: 16px;
 }
-.checkout-btn {
-  background: var(--primary);
-  color: white;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  width: 100%;
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   transition: var(--transition-fast);
 }
-.checkout-btn:hover {
-  background: var(--primary-dark);
-}
-.drawer-empty {
-  text-align: center;
-  padding: 40px;
-}
-.empty-catalog-btn {
-  background: var(--primary);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 40px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 12px;
+.modal-close:hover {
+  background: var(--border);
 }
 
 /* МОДАЛЬНЫЕ ОКНА (точь-в-точь как в catalog.html) */
@@ -366,130 +439,27 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   background: var(--border);
 }
 
-.checkout-modal {
-  max-width: 500px;
-  width: 90%;
-  padding: 28px;
-}
-.checkout-modal input, .checkout-modal textarea {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: inherit;
-}
-.checkout-modal textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-.checkout-modal button[type="submit"] {
-  width: 100%;
-  padding: 12px;
-  background: var(--primary);
-  color: white;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  margin-top: 12px;
-}
-
-/* PROMO PAGE */
-.main-content {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 40px 24px 60px;
-}
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 800;
-  margin-bottom: 28px;
-}
-.page-title span { color: var(--primary); }
-.promo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 28px;
-}
-.promo-card {
-  background: var(--bg-white);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--border-light);
-  transition: var(--transition);
-}
-.promo-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
-}
-.promo-card-banner {
-  height: 200px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--primary), #4A1D96);
-}
-.promo-card-banner img {
-  max-height: 130px;
-  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));
-}
-.promo-card-body { padding: 24px; }
-.promo-card-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.promo-card-text {
-  color: var(--text-light);
-  margin-bottom: 16px;
-  font-size: 0.9rem;
-}
-.promo-meta {
-  display: flex;
-  gap: 16px;
-  font-size: 0.75rem;
-  color: var(--text-light);
-  margin-top: 12px;
-}
-
 /* FOOTER */
 .footer {
   background: var(--text-dark);
   color: rgba(255,255,255,0.7);
   padding: 48px 24px 24px;
   margin-top: 60px;
-}
-.footer-content {
-  max-width: 1320px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 40px;
-}
-.footer-col h4 {
-  color: white;
-  margin-bottom: 16px;
-}
-.footer-col a {
-  display: block;
-  font-size: 0.85rem;
-  padding: 4px 0;
-  transition: color 0.2s;
-  cursor: pointer;
-}
-.footer-col a:hover {
-  color: white;
-}
-.footer-bottom {
   text-align: center;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  margin-top: 40px;
 }
+.footer a {
+  color: rgba(255,255,255,0.7);
+}
+.footer a:hover {
+  color: white;
+}
+
 @media (max-width: 768px) {
-  .footer-content { grid-template-columns: 1fr; gap: 24px; }
-  .promo-grid { grid-template-columns: 1fr; }
+  .profile-header { flex-direction: column; text-align: center; }
+  .profile-actions { justify-content: center; }
+  .order-header { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
+
 .logotype {
   width: 65px;
   height: 65px;
@@ -508,7 +478,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
     </a>
     <nav class="nav">
       <a href="catalog.html" class="nav-link">Все товары</a>
-      <a href="promotions.html" class="nav-link active">Акции</a>
+      <a href="promotions.html" class="nav-link">Акции</a>
     </nav>
     <div class="header-actions">
       <button class="header-btn" id="cartIconBtn">
@@ -528,9 +498,8 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   </div>
 </header>
 
-<main class="main-content">
-  <h1 class="page-title">Актуальные <span>акции</span></h1>
-  <div class="promo-grid" id="promoGrid"></div>
+<main class="main-content" id="profileContent">
+  <!-- Контент загружается JS -->
 </main>
 
 <!-- CART DRAWER -->
@@ -542,21 +511,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
     </div>
     <div id="drawerItems" class="drawer-items"></div>
     <div id="drawerTotal" class="drawer-total"></div>
-  </div>
-</div>
-
-<!-- CHECKOUT MODAL -->
-<div class="modal-overlay" id="checkoutModal">
-  <div class="modal checkout-modal">
-    <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
-    <h2 style="margin-bottom:20px;">Оформление заказа</h2>
-    <form id="checkoutForm" class="checkout-form" onsubmit="submitOrder(event)">
-      <input type="text" id="checkoutName" placeholder="Ваше имя" required>
-      <input type="tel" id="checkoutPhone" placeholder="Телефон" required>
-      <input type="email" id="checkoutEmail" placeholder="Email" required>
-      <textarea id="checkoutAddress" placeholder="Адрес доставки" required></textarea>
-      <button type="submit">Подтвердить заказ</button>
-    </form>
   </div>
 </div>
 
@@ -575,18 +529,12 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 </div>
 
 <footer class="footer">
-  <div class="footer-content">
-    <div class="footer-col"><h4>California</h4><p>Техника Apple с доставкой по всей России</p></div>
-    <div class="footer-col">
-      <h4>Каталог</h4>
-      <a href="catalog.html?category=smartphones">Смартфоны</a>
-      <a href="catalog.html?category=laptops">Ноутбуки</a>
-      <a href="catalog.html?category=wearables">Аксессуары</a>
-    </div>
-    <div class="footer-col"><h4>Покупателям</h4><a href="agreement.html">Пользовательское соглашение</a></div>
-    <div class="footer-col"><h4>Контакты</h4><a>+7 (800) 123-45-67</a><a>info@california.store</a></div>
+  <div>© 2026 California — интернет-магазин электроники Apple</div>
+  <div style="margin-top: 12px;">
+    <a href="agreement.html">Пользовательское соглашение</a> | 
+    <a href="catalog.html">Каталог</a> | 
+    <a href="promotions.html">Акции</a>
   </div>
-  <div class="footer-bottom">© 2026 California. Все права защищены.</div>
 </footer>
 
 <script>
@@ -604,153 +552,66 @@ function showToast(message, duration = 3000) {
   }, duration);
 }
 
-// Данные акций
-const PROMOTIONS = [
-  { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"../assets/iphone15promax.jpg", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
-  { title:"MacBook Air M3 — бесплатная доставка", text:"Закажите MacBook Air на чипе M3 и получите бесплатную экспресс-доставку + подарочный чехол.", image:"../assets/macbookairm313.jpg", date:"10.04 – 25.04", models:"MacBook Air 13″ M3, MacBook Air 15″ M3" },
-  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"../assets/airpods.png", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
-  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"../assets/aplvat.png", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
-];
-
-let cart = [];
-let currentUser = null;
-let authMode = 'login';
-
-// Сохранение заказа в историю
-function saveOrderToStorage(orderData) {
-  let orders = [];
-  try {
-    const saved = localStorage.getItem('california_orders');
-    if (saved) orders = JSON.parse(saved);
-  } catch(e) {}
-  orders.push(orderData);
-  localStorage.setItem('california_orders', JSON.stringify(orders));
-}
-
 // Корзина
+let cart = [];
 function loadCart() {
   try {
     const saved = localStorage.getItem('california_cart');
     if (saved) cart = JSON.parse(saved);
   } catch(e) { cart = []; }
   updateCartBadge();
-  renderCartDrawer();
-}
-function saveCart() {
-  localStorage.setItem('california_cart', JSON.stringify(cart));
-  updateCartBadge();
-  renderCartDrawer();
 }
 function updateCartBadge() {
-  const count = cart.reduce((sum, i) => sum + i.qty, 0);
+  const count = cart.reduce((s,i) => s + i.qty, 0);
   const badge = document.getElementById('cartBadge');
   badge.textContent = count;
   badge.classList.toggle('visible', count > 0);
-}
-function getCartTotal() {
-  return cart.reduce((sum, item) => sum + (item.price || 0) * item.qty, 0);
 }
 function renderCartDrawer() {
   const container = document.getElementById('drawerItems');
   const totalContainer = document.getElementById('drawerTotal');
   if (!cart.length) {
-    container.innerHTML = `<div class="drawer-empty">Корзина пуста<br><a href="catalog.html" class="empty-catalog-btn">Перейти в каталог →</a></div>`;
+    container.innerHTML = '<div style="text-align:center;padding:40px;">Корзина пуста</div>';
     totalContainer.innerHTML = '';
     return;
   }
   let itemsHtml = cart.map(item => `
-    <div class="drawer-item">
-      <div class="drawer-item-img"><img src="${item.image}" alt="${item.name}"></div>
-      <div class="drawer-item-info">
-        <div class="drawer-item-name">${item.name}</div>
-        <div class="drawer-item-price">${item.price.toLocaleString()} ₽</div>
-        <div class="drawer-qty">
-          <button onclick="updateCartQty(${item.id}, -1)">−</button>
-          <span>${item.qty}</span>
-          <button onclick="updateCartQty(${item.id}, 1)">+</button>
-          <button onclick="removeFromCart(${item.id})">🗑</button>
-        </div>
-      </div>
+    <div style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:var(--bg-light); border-radius:8px;">
+      <div style="width:60px;height:60px;background:var(--bg-gray);display:flex;align-items:center;justify-content:center;border-radius:8px;"><img src="${item.image}" style="max-height:50px;"></div>
+      <div style="flex:1"><div style="font-weight:600;">${item.name}</div><div>${item.price?.toLocaleString()} ₽</div><div>Кол-во: ${item.qty}</div></div>
     </div>
   `).join('');
   container.innerHTML = itemsHtml;
-  totalContainer.innerHTML = `
-    <div style="display:flex; justify-content:space-between;">
-      <span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>
-    </div>
-    <button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>
-  `;
+  const total = cart.reduce((s,i) => s + (i.price||0) * i.qty, 0);
+  totalContainer.innerHTML = `<div style="display:flex;justify-content:space-between;"><span>Итого:</span><span>${total.toLocaleString()} ₽</span></div>`;
 }
-function updateCartQty(id, delta) {
-  const item = cart.find(c => c.id === id);
-  if (item) {
-    item.qty += delta;
-    if (item.qty < 1) removeFromCart(id);
-    else saveCart();
-  }
+function openCartDrawer() {
+  renderCartDrawer();
+  document.getElementById('cartDrawerOverlay').classList.add('active');
 }
-function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
-  saveCart();
-}
-function openCartDrawer() { document.getElementById('cartDrawerOverlay').classList.add('active'); }
 function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
+document.getElementById('cartIconBtn').onclick = openCartDrawer;
 
-// Оформление заказа
-function openCheckoutModal() {
-  if(!cart.length) {
-    showToast("Корзина пуста");
-    return;
-  }
-  document.getElementById('checkoutModal').classList.add('active');
-}
-function closeCheckoutModal() {
-  document.getElementById('checkoutModal').classList.remove('active');
-}
-function submitOrder(e) {
-  e.preventDefault();
-  const name = document.getElementById('checkoutName').value;
-  const phone = document.getElementById('checkoutPhone').value;
-  const email = document.getElementById('checkoutEmail').value;
-  const address = document.getElementById('checkoutAddress').value;
-  if(!name || !phone || !email || !address) {
-    showToast("Заполните все поля");
-    return;
-  }
-  
-  const order = {
-    id: Date.now(),
-    date: new Date().toLocaleString(),
-    name: name,
-    phone: phone,
-    email: email,
-    address: address,
-    total: getCartTotal(),
-    items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
-    user: currentUser ? currentUser.login : 'guest'
-  };
-  saveOrderToStorage(order);
-  
-  showToast(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
-  cart = [];
-  saveCart();
-  closeCheckoutModal();
-  closeCartDrawer();
-}
+// Авторизация и профиль
+let currentUser = null;
+let authMode = 'login';
 
-// Авторизация
 function loadUser() {
   try {
     const saved = localStorage.getItem('california_user');
     if (saved) {
       currentUser = JSON.parse(saved);
       updateAuthUI();
+      renderProfilePage();
     } else {
-      currentUser = null;
-      updateAuthUI();
+      // Если не авторизован — редирект на каталог
+      window.location.href = 'catalog.html';
     }
-  } catch(e) { currentUser = null; updateAuthUI(); }
+  } catch(e) { 
+    window.location.href = 'catalog.html';
+  }
 }
+
 function updateAuthUI() {
   const authDiv = document.getElementById('authButtons');
   const greetDiv = document.getElementById('userGreeting');
@@ -764,6 +625,7 @@ function updateAuthUI() {
     greetDiv.style.display = 'none';
   }
 }
+
 function goToProfile() {
   if (currentUser) {
     window.location.href = 'profile.html';
@@ -771,6 +633,7 @@ function goToProfile() {
     showToast('Сначала войдите в аккаунт');
   }
 }
+
 function openAuthModal(mode) {
   authMode = mode;
   document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация';
@@ -779,6 +642,7 @@ function openAuthModal(mode) {
 }
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
+
 function handleAuth(e) {
   e.preventDefault();
   const login = document.getElementById('authLogin').value.trim();
@@ -792,34 +656,99 @@ function handleAuth(e) {
   updateAuthUI();
   closeAuthModal();
   showToast(`Добро пожаловать, ${login}!`);
+  renderProfilePage();
 }
 
-// Рендер акций
-function renderPromotions() {
-  const grid = document.getElementById('promoGrid');
-  grid.innerHTML = PROMOTIONS.map(p => `
-    <div class="promo-card">
-      <div class="promo-card-banner"><img src="${p.image}" alt="${p.title}"></div>
-      <div class="promo-card-body">
-        <h3 class="promo-card-title">${p.title}</h3>
-        <p class="promo-card-text">${p.text}</p>
-        <div class="promo-meta">📅 ${p.date}<br>📱 ${p.models}</div>
+function logoutUser() {
+  if (currentUser) {
+    currentUser = null;
+    localStorage.removeItem('california_user');
+    updateAuthUI();
+    showToast('Вы вышли из аккаунта');
+    // Редирект на каталог
+    window.location.href = 'catalog.html';
+  }
+}
+
+function deleteAccount() {
+  if (!currentUser) return;
+  if (confirm('Вы уверены, что хотите удалить аккаунт? Все данные будут потеряны.')) {
+    localStorage.removeItem('california_user');
+    localStorage.removeItem('california_cart');
+    cart = [];
+    updateCartBadge();
+    currentUser = null;
+    updateAuthUI();
+    showToast('Аккаунт удалён');
+    window.location.href = 'catalog.html';
+  }
+}
+
+function renderProfilePage() {
+  if (!currentUser) return; // редирект уже произошёл в loadUser
+  
+  let orders = [];
+  try {
+    const savedOrders = localStorage.getItem('california_orders');
+    if (savedOrders) {
+      const allOrders = JSON.parse(savedOrders);
+      orders = allOrders.filter(order => order.user === currentUser.login);
+      orders.sort((a,b) => b.id - a.id);
+    }
+  } catch(e) {}
+  
+  const ordersHtml = orders.length === 0 ? `
+    <div class="empty-orders">
+      <p>У вас пока нет заказов.</p>
+      <a href="catalog.html">Перейти в каталог →</a>
+    </div>
+  ` : orders.map(order => `
+    <div class="order-card">
+      <div class="order-header">
+        <span class="order-id">Заказ №${order.id}</span>
+        <span class="order-date">${order.date}</span>
       </div>
+      <div class="order-details">
+        <div><strong>Получатель:</strong> ${order.name}</div>
+        <div><strong>Телефон:</strong> ${order.phone}</div>
+        <div><strong>Email:</strong> ${order.email}</div>
+        <div><strong>Адрес:</strong> ${order.address}</div>
+        <div class="order-items" style="margin-top:12px;"><strong>Товары:</strong><br>
+          ${order.items.map(item => `• ${item.name} × ${item.qty} — ${(item.price * item.qty).toLocaleString()} ₽`).join('<br>')}
+        </div>
+      </div>
+      <div class="order-total">Итого: ${order.total.toLocaleString()} ₽</div>
     </div>
   `).join('');
+  
+  const container = document.getElementById('profileContent');
+  container.innerHTML = `
+    <div class="profile-header">
+      <div class="profile-avatar-large">${currentUser.login.charAt(0).toUpperCase()}</div>
+      <div class="profile-info">
+        <h1>${currentUser.login}</h1>
+        <p>Логин: ${currentUser.login}</p>
+        <div class="profile-actions">
+          <button class="profile-action-btn btn-logout" onclick="logoutUser()">Выйти из аккаунта</button>
+          <button class="profile-action-btn btn-delete" onclick="deleteAccount()">Удалить аккаунт</button>
+        </div>
+      </div>
+    </div>
+    <div class="orders-section">
+      <h2>История заказов</h2>
+      <div class="orders-list">
+        ${ordersHtml}
+      </div>
+    </div>
+  `;
 }
 
-// Синхронизация
+// Синхронизация между вкладками
 window.addEventListener('storage', (e) => {
   if (e.key === 'california_user') loadUser();
   if (e.key === 'california_cart') loadCart();
 });
 
-document.getElementById('cartIconBtn').addEventListener('click', openCartDrawer);
-document.getElementById('cartDrawerOverlay').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('cartDrawerOverlay')) closeCartDrawer();
-});
-renderPromotions();
 loadCart();
 loadUser();
 </script>
