@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ-панель California</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { margin-bottom: 20px; color: #6C3FC5; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; background: #ddd; border: none; cursor: pointer; border-radius: 8px; }
+    .tab-btn.active { background: #6C3FC5; color: white; }
+    .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .tab-content.active { display: block; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f2f2f2; }
+    button { padding: 6px 12px; margin: 2px; cursor: pointer; border-radius: 4px; border: none; }
+    .form-group { margin-bottom: 15px; }
+    label { display: inline-block; width: 150px; font-weight: bold; }
+    input, textarea, select { width: 300px; padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+    textarea { height: 60px; }
+    .add-btn { background: #28a745; color: white; }
+    .edit-btn { background: #ffc107; }
+    .delete-btn { background: #dc3545; color: white; }
+    button:hover { opacity: 0.8; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Админ-панель California</h1>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products">Товары</button>
+    <button class="tab-btn" data-tab="promotions">Акции</button>
+  </div>
+  <div id="products-tab" class="tab-content active">
+    <h2>Управление товарами</h2>
+    <form id="productForm">
+      <input type="hidden" id="productId">
+      <div class="form-group"><label>Название:</label><input type="text" id="productName" required></div>
+      <div class="form-group"><label>Цена (₽):</label><input type="number" id="productPrice" required></div>
+      <div class="form-group"><label>Старая цена:</label><input type="number" id="productOldPrice"></div>
+      <div class="form-group"><label>Изображение (URL):</label><input type="text" id="productImage"></div>
+      <div class="form-group"><label>Описание:</label><textarea id="productDesc"></textarea></div>
+      <div class="form-group"><label>Категория:</label>
+        <select id="productCategory">
+          <option>smartphones</option><option>laptops</option><option>tablets</option><option>wearables</option><option>audio</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Бейдж (hit,sale,new):</label><input type="text" id="productBadge"></div>
+      <div class="form-group"><label>Популярность (0-100):</label><input type="number" id="productPopular" value="0"></div>
+      <button type="submit" class="add-btn">Сохранить</button>
+      <button type="button" id="cancelProductBtn">Отмена</button>
+    </form>
+    <table id="productsTable">
+      <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Категория</th><th>Действия</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="promotions-tab" class="tab-content">
+    <h2>Управление акциями</h2>
+    <form id="promoForm">
+      <input type="hidden" id="promoId">
+      <div class="form-group"><label>Название:</label><input type="text" id="promoTitle" required></div>
+      <div class="form-group"><label>Текст:</label><textarea id="promoText"></textarea></div>
+      <div class="form-group"><label>Изображение (URL):</label><input type="text" id="promoImage"></div>
+      <div class="form-group"><label>Дата действия:</label><input type="text" id="promoDate" placeholder="01.04 – 30.04"></div>
+      <div class="form-group"><label>Модели:</label><input type="text" id="promoModels"></div>
+      <button type="submit" class="add-btn">Сохранить</button>
+      <button type="button" id="cancelPromoBtn">Отмена</button>
+    </form>
+    <table id="promosTable">
+      <thead><tr><th>ID</th><th>Название</th><th>Дата</th><th>Действия</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:3001/api/admin';
+const authToken = btoa('admin:admin123');
+
+async function fetchWithAuth(url, options = {}) {
+  const headers = { 'Authorization': `Basic ${authToken}`, 'Content-Type': 'application/json' };
+  const res = await fetch(url, { ...options, headers });
+  if (!res.ok) throw new Error('Ошибка запроса');
+  return res.json();
+}
+
+// Products
+async function loadProducts() {
+  const data = await fetchWithAuth(`${API_BASE}/products`);
+  const tbody = document.querySelector('#productsTable tbody');
+  tbody.innerHTML = '';
+  data.forEach(p => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = p.id;
+    row.insertCell(1).innerText = p.name;
+    row.insertCell(2).innerText = p.price;
+    row.insertCell(3).innerText = p.category;
+    const actions = row.insertCell(4);
+    const editBtn = document.createElement('button');
+    editBtn.innerText = 'Редактировать';
+    editBtn.className = 'edit-btn';
+    editBtn.onclick = () => fillProductForm(p);
+    const delBtn = document.createElement('button');
+    delBtn.innerText = 'Удалить';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = async () => {
+      if (confirm('Удалить товар?')) {
+        await fetchWithAuth(`${API_BASE}/products/${p.id}`, { method: 'DELETE' });
+        loadProducts();
+      }
+    };
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+  });
+}
+
+function fillProductForm(p) {
+  document.getElementById('productId').value = p.id;
+  document.getElementById('productName').value = p.name;
+  document.getElementById('productPrice').value = p.price;
+  document.getElementById('productOldPrice').value = p.oldPrice || '';
+  document.getElementById('productImage').value = p.image || '';
+  document.getElementById('productDesc').value = p.description || '';
+  document.getElementById('productCategory').value = p.category;
+  document.getElementById('productBadge').value = p.badge || '';
+  document.getElementById('productPopular').value = p.popular || 0;
+}
+
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('productId').value;
+  const data = {
+    id: id ? parseInt(id) : undefined,
+    name: document.getElementById('productName').value,
+    price: parseInt(document.getElementById('productPrice').value),
+    oldPrice: document.getElementById('productOldPrice').value ? parseInt(document.getElementById('productOldPrice').value) : null,
+    image: document.getElementById('productImage').value,
+    description: document.getElementById('productDesc').value,
+    category: document.getElementById('productCategory').value,
+    badge: document.getElementById('productBadge').value,
+    popular: parseInt(document.getElementById('productPopular').value) || 0
+  };
+  await fetchWithAuth(`${API_BASE}/products`, { method: 'POST', body: JSON.stringify(data) });
+  document.getElementById('productForm').reset();
+  document.getElementById('productId').value = '';
+  loadProducts();
+});
+
+document.getElementById('cancelProductBtn').addEventListener('click', () => {
+  document.getElementById('productForm').reset();
+  document.getElementById('productId').value = '';
+});
+
+// Promotions
+async function loadPromotions() {
+  const data = await fetchWithAuth(`${API_BASE}/promotions`);
+  const tbody = document.querySelector('#promosTable tbody');
+  tbody.innerHTML = '';
+  data.forEach(p => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = p.id;
+    row.insertCell(1).innerText = p.title;
+    row.insertCell(2).innerText = p.date || '';
+    const actions = row.insertCell(3);
+    const editBtn = document.createElement('button');
+    editBtn.innerText = 'Редактировать';
+    editBtn.className = 'edit-btn';
+    editBtn.onclick = () => fillPromoForm(p);
+    const delBtn = document.createElement('button');
+    delBtn.innerText = 'Удалить';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = async () => {
+      if (confirm('Удалить акцию?')) {
+        await fetchWithAuth(`${API_BASE}/promotions/${p.id}`, { method: 'DELETE' });
+        loadPromotions();
+      }
+    };
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+  });
+}
+
+function fillPromoForm(p) {
+  document.getElementById('promoId').value = p.id;
+  document.getElementById('promoTitle').value = p.title;
+  document.getElementById('promoText').value = p.text || '';
+  document.getElementById('promoImage').value = p.image || '';
+  document.getElementById('promoDate').value = p.date || '';
+  document.getElementById('promoModels').value = p.models || '';
+}
+
+document.getElementById('promoForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('promoId').value;
+  const data = {
+    id: id ? parseInt(id) : undefined,
+    title: document.getElementById('promoTitle').value,
+    text: document.getElementById('promoText').value,
+    image: document.getElementById('promoImage').value,
+    date: document.getElementById('promoDate').value,
+    models: document.getElementById('promoModels').value
+  };
+  await fetchWithAuth(`${API_BASE}/promotions`, { method: 'POST', body: JSON.stringify(data) });
+  document.getElementById('promoForm').reset();
+  document.getElementById('promoId').value = '';
+  loadPromotions();
+});
+
+document.getElementById('cancelPromoBtn').addEventListener('click', () => {
+  document.getElementById('promoForm').reset();
+  document.getElementById('promoId').value = '';
+});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById(`${tab}-tab`).classList.add('active');
+    if (tab === 'products') loadProducts();
+    else if (tab === 'promotions') loadPromotions();
+  });
+});
+
+loadProducts();
+</script>
+</body>
+</html>

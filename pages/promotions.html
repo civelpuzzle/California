@@ -40,7 +40,6 @@ body {
 a { text-decoration: none; color: inherit; }
 button { cursor: pointer; border: none; font-family: inherit; background: none; }
 
-/* TOAST уведомления */
 .toast-container {
   position: fixed;
   bottom: 20px;
@@ -69,7 +68,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* HEADER */
 .header {
   background: var(--bg-white);
   border-bottom: 1px solid var(--border);
@@ -179,7 +177,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-weight: 700;
 }
 
-/* CART DRAWER */
 .drawer-overlay {
   position: fixed;
   inset: 0;
@@ -294,7 +291,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   margin-top: 12px;
 }
 
-/* МОДАЛЬНЫЕ ОКНА (точь-в-точь как в catalog.html) */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -365,7 +361,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 .auth-modal .modal-close:hover {
   background: var(--border);
 }
-
 .checkout-modal {
   max-width: 500px;
   width: 90%;
@@ -392,8 +387,46 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-weight: 700;
   margin-top: 12px;
 }
+.profile-modal {
+  max-width: 600px;
+  width: 90%;
+  padding: 20px;
+}
+.profile-modal h2 {
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+.profile-orders {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+.order-item {
+  border: 1px solid var(--border-light);
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+}
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-logout-profile, .btn-delete-profile {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-logout-profile {
+  background: var(--bg-gray);
+  color: var(--text-medium);
+}
+.btn-delete-profile {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
-/* PROMO PAGE */
 .main-content {
   max-width: 1320px;
   margin: 0 auto;
@@ -452,7 +485,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   margin-top: 12px;
 }
 
-/* FOOTER */
 .footer {
   background: var(--text-dark);
   color: rgba(255,255,255,0.7);
@@ -520,7 +552,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
         <button class="btn-login" onclick="openAuthModal('login')">Вход</button>
         <button class="btn-register" onclick="openAuthModal('register')">Регистрация</button>
       </div>
-      <div id="userGreeting" style="display:none;" class="user-greeting" onclick="goToProfile()">
+      <div id="userGreeting" style="display:none;" class="user-greeting">
         <div class="user-avatar" id="userAvatar">U</div>
         <span id="userName">User</span>
       </div>
@@ -533,7 +565,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   <div class="promo-grid" id="promoGrid"></div>
 </main>
 
-<!-- CART DRAWER -->
+<!-- DRAWER CART -->
 <div class="drawer-overlay" id="cartDrawerOverlay">
   <div class="cart-drawer">
     <div class="drawer-header">
@@ -560,7 +592,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   </div>
 </div>
 
-<!-- AUTH MODAL (точная копия из catalog.html) -->
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal auth-modal">
     <button class="modal-close" onclick="closeAuthModal()">✕</button>
@@ -571,6 +603,20 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
       <button type="submit" id="authSubmitBtn">Войти</button>
     </form>
     <p id="authSwitch" style="margin-top:16px; text-align:center;">Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a></p>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal profile-modal">
+    <button class="modal-close" onclick="closeProfileModal()">✕</button>
+    <h2 id="profileModalTitle">Профиль</h2>
+    <div id="profileInfo" style="margin-bottom: 20px;"></div>
+    <div id="profileOrders" class="profile-orders"></div>
+    <div class="profile-actions">
+      <button id="logoutBtn" class="btn-logout-profile">Выйти</button>
+      <button id="deleteAccountBtn" class="btn-delete-profile">Удалить аккаунт</button>
+    </div>
   </div>
 </div>
 
@@ -590,7 +636,12 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 </footer>
 
 <script>
-// TOAST
+const API_URL = 'http://localhost:3001/api';
+let currentUser = null;
+let token = localStorage.getItem('token');
+let cart = [];
+let authMode = 'login';
+
 function showToast(message, duration = 3000) {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
@@ -604,51 +655,66 @@ function showToast(message, duration = 3000) {
   }, duration);
 }
 
-// Данные акций
-const PROMOTIONS = [
-  { title:"Скидка 15% на два iPhone", text:"Купите два iPhone любых моделей и получите скидку 15% на весь заказ.", image:"../assets/iphone15promax.jpg", date:"01.04 – 30.04", models:"iPhone 15, 15 Plus, 15 Pro, 15 Pro Max" },
-  { title:"MacBook Air M3 — бесплатная доставка", text:"Закажите MacBook Air на чипе M3 и получите бесплатную экспресс-доставку + подарочный чехол.", image:"../assets/macbookairm313.jpg", date:"10.04 – 25.04", models:"MacBook Air 13″ M3, MacBook Air 15″ M3" },
-  { title:"AirPods Pro 2 — кэшбэк 5000 ₽", text:"При покупке AirPods Pro 2 вы получаете кэшбэк 5000 ₽ на бонусную карту.", image:"../assets/airpods.png", date:"01.04 – 30.04", models:"AirPods Pro 2 (USB-C)" },
-  { title:"Apple Watch Ultra 2 — трейд-ин", text:"Сдайте старые часы и получите скидку до 15 000 ₽ на Apple Watch Ultra 2.", image:"../assets/aplvat.png", date:"05.04 – 20.04", models:"Apple Watch Ultra 2" }
-];
-
-let cart = [];
-let currentUser = null;
-let authMode = 'login';
-
-// Сохранение заказа в историю
-function saveOrderToStorage(orderData) {
-  let orders = [];
+async function loadPromotions() {
   try {
-    const saved = localStorage.getItem('california_orders');
-    if (saved) orders = JSON.parse(saved);
-  } catch(e) {}
-  orders.push(orderData);
-  localStorage.setItem('california_orders', JSON.stringify(orders));
+    const res = await fetch(`${API_URL}/promotions`);
+    const promotions = await res.json();
+    renderPromotions(promotions);
+  } catch(e) { console.error(e); showToast('Ошибка загрузки акций'); }
+}
+function renderPromotions(promotions) {
+  const grid = document.getElementById('promoGrid');
+  grid.innerHTML = promotions.map(p => `
+    <div class="promo-card">
+      <div class="promo-card-banner"><img src="${p.image}" alt="${p.title}"></div>
+      <div class="promo-card-body">
+        <h3 class="promo-card-title">${p.title}</h3>
+        <p class="promo-card-text">${p.text}</p>
+        <div class="promo-meta">📅 ${p.date}<br>📱 ${p.models}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
-// Корзина
-function loadCart() {
+async function loadCartFromServer() {
+  if (!token) { cart = []; updateCartBadge(); renderCartDrawer(); return; }
   try {
-    const saved = localStorage.getItem('california_cart');
-    if (saved) cart = JSON.parse(saved);
-  } catch(e) { cart = []; }
-  updateCartBadge();
-  renderCartDrawer();
+    const res = await fetch(`${API_URL}/cart`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (res.ok) {
+      const data = await res.json();
+      cart = data.items;
+      updateCartBadge();
+      renderCartDrawer();
+    } else if (res.status === 401) logoutUser();
+  } catch(e) { console.error(e); }
 }
-function saveCart() {
-  localStorage.setItem('california_cart', JSON.stringify(cart));
-  updateCartBadge();
-  renderCartDrawer();
+function updateCartBadge() { let count = cart.reduce((s, i) => s + i.qty, 0); let badge = document.getElementById('cartBadge'); badge.textContent = count; badge.classList.toggle('visible', count > 0); }
+async function updateCartQty(productId, delta) {
+  const item = cart.find(c => c.id === productId);
+  if (item) {
+    const newQty = item.qty + delta;
+    if (newQty <= 0) await removeFromCart(productId);
+    else await addToCart(productId, newQty);
+  }
 }
-function updateCartBadge() {
-  const count = cart.reduce((sum, i) => sum + i.qty, 0);
-  const badge = document.getElementById('cartBadge');
-  badge.textContent = count;
-  badge.classList.toggle('visible', count > 0);
+async function addToCart(productId, qty = 1) {
+  if (!token) { showToast('Для добавления в корзину необходимо войти'); openAuthModal('login'); return; }
+  try {
+    const res = await fetch(`${API_URL}/cart`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ productId, qty })
+    });
+    if (res.ok) await loadCartFromServer();
+    else if (res.status === 401) logoutUser();
+  } catch(e) { console.error(e); }
 }
-function getCartTotal() {
-  return cart.reduce((sum, item) => sum + (item.price || 0) * item.qty, 0);
+async function removeFromCart(productId) {
+  if (!token) return;
+  try {
+    await fetch(`${API_URL}/cart/${productId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+    await loadCartFromServer();
+  } catch(e) { console.error(e); }
 }
 function renderCartDrawer() {
   const container = document.getElementById('drawerItems');
@@ -674,82 +740,81 @@ function renderCartDrawer() {
     </div>
   `).join('');
   container.innerHTML = itemsHtml;
-  totalContainer.innerHTML = `
-    <div style="display:flex; justify-content:space-between;">
-      <span>Итого:</span><span>${getCartTotal().toLocaleString()} ₽</span>
-    </div>
-    <button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>
-  `;
-}
-function updateCartQty(id, delta) {
-  const item = cart.find(c => c.id === id);
-  if (item) {
-    item.qty += delta;
-    if (item.qty < 1) removeFromCart(id);
-    else saveCart();
-  }
-}
-function removeFromCart(id) {
-  cart = cart.filter(c => c.id !== id);
-  saveCart();
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  totalContainer.innerHTML = `<div style="display:flex; justify-content:space-between;"><span>Итого:</span><span>${total.toLocaleString()} ₽</span></div><button class="checkout-btn" onclick="openCheckoutModal()">Оформить заказ</button>`;
 }
 function openCartDrawer() { document.getElementById('cartDrawerOverlay').classList.add('active'); }
 function closeCartDrawer() { document.getElementById('cartDrawerOverlay').classList.remove('active'); }
+document.getElementById('cartIconBtn').onclick = openCartDrawer;
 
-// Оформление заказа
 function openCheckoutModal() {
-  if(!cart.length) {
-    showToast("Корзина пуста");
-    return;
-  }
+  if (!cart.length) { showToast('Корзина пуста'); return; }
+  if (!token) { showToast('Для оформления заказа войдите в аккаунт'); openAuthModal('login'); return; }
   document.getElementById('checkoutModal').classList.add('active');
 }
-function closeCheckoutModal() {
-  document.getElementById('checkoutModal').classList.remove('active');
-}
-function submitOrder(e) {
+function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
+async function submitOrder(e) {
   e.preventDefault();
   const name = document.getElementById('checkoutName').value;
   const phone = document.getElementById('checkoutPhone').value;
   const email = document.getElementById('checkoutEmail').value;
   const address = document.getElementById('checkoutAddress').value;
-  if(!name || !phone || !email || !address) {
-    showToast("Заполните все поля");
-    return;
-  }
-  
-  const order = {
-    id: Date.now(),
-    date: new Date().toLocaleString(),
-    name: name,
-    phone: phone,
-    email: email,
-    address: address,
-    total: getCartTotal(),
-    items: cart.map(item => ({ name: item.name, price: item.price, qty: item.qty })),
-    user: currentUser ? currentUser.login : 'guest'
-  };
-  saveOrderToStorage(order);
-  
-  showToast(`Спасибо, ${name}! Ваш заказ на сумму ${getCartTotal().toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
-  cart = [];
-  saveCart();
-  closeCheckoutModal();
-  closeCartDrawer();
+  if (!name || !phone || !email || !address) { showToast('Заполните все поля'); return; }
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const items = cart.map(i => ({ name: i.name, price: i.price, qty: i.qty }));
+  try {
+    const res = await fetch(`${API_URL}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ name, phone, email, address, items, total })
+    });
+    if (res.ok) {
+      showToast(`Спасибо, ${name}! Ваш заказ на сумму ${total.toLocaleString()} ₽ принят. Доставка по адресу: ${address}`);
+      await loadCartFromServer();
+      closeCheckoutModal();
+      closeCartDrawer();
+    } else {
+      showToast('Ошибка оформления заказа');
+    }
+  } catch (err) { console.error(err); showToast('Ошибка сети'); }
 }
 
-// Авторизация
-function loadUser() {
+async function handleAuth(e) {
+  e.preventDefault();
+  const login = document.getElementById('authLogin').value.trim();
+  const password = document.getElementById('authPassword').value;
+  if (!login || !password) { showToast('Заполните все поля'); return; }
+  const url = authMode === 'login' ? `${API_URL}/auth/login` : `${API_URL}/auth/register`;
   try {
-    const saved = localStorage.getItem('california_user');
-    if (saved) {
-      currentUser = JSON.parse(saved);
-      updateAuthUI();
-    } else {
-      currentUser = null;
-      updateAuthUI();
-    }
-  } catch(e) { currentUser = null; updateAuthUI(); }
+    const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ login, password }) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Ошибка');
+    token = data.token;
+    localStorage.setItem('token', token);
+    currentUser = data.user;
+    updateAuthUI();
+    closeAuthModal();
+    showToast(`Добро пожаловать, ${login}!`);
+    await loadCartFromServer();
+  } catch (err) { showToast(err.message); }
+}
+function logoutUser() {
+  token = null;
+  localStorage.removeItem('token');
+  currentUser = null;
+  updateAuthUI();
+  cart = [];
+  updateCartBadge();
+  renderCartDrawer();
+  showToast('Вы вышли из аккаунта');
+}
+async function loadUser() {
+  if (!token) { currentUser = null; updateAuthUI(); return; }
+  try {
+    const res = await fetch(`${API_URL}/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+    if (res.ok) { const data = await res.json(); currentUser = data; updateAuthUI(); await loadCartFromServer(); }
+    else logoutUser();
+  } catch(e) { logoutUser(); }
 }
 function updateAuthUI() {
   const authDiv = document.getElementById('authButtons');
@@ -759,69 +824,59 @@ function updateAuthUI() {
     greetDiv.style.display = 'flex';
     document.getElementById('userName').textContent = currentUser.login;
     document.getElementById('userAvatar').textContent = currentUser.login.charAt(0).toUpperCase();
+    greetDiv.onclick = openProfileModal;
   } else {
     authDiv.style.display = 'flex';
     greetDiv.style.display = 'none';
   }
 }
-function goToProfile() {
-  if (currentUser) {
-    window.location.href = 'profile.html';
-  } else {
-    showToast('Сначала войдите в аккаунт');
-  }
-}
-function openAuthModal(mode) {
-  authMode = mode;
-  document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация';
-  document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
-  document.getElementById('authModal').classList.add('active');
-}
+function openAuthModal(mode) { authMode = mode; document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация'; document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться'; document.getElementById('authModal').classList.add('active'); }
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
-function handleAuth(e) {
-  e.preventDefault();
-  const login = document.getElementById('authLogin').value.trim();
-  const password = document.getElementById('authPassword').value;
-  if (!login || !password) {
-    showToast('Заполните все поля');
-    return;
-  }
-  currentUser = { login: login };
-  localStorage.setItem('california_user', JSON.stringify(currentUser));
-  updateAuthUI();
-  closeAuthModal();
-  showToast(`Добро пожаловать, ${login}!`);
+
+async function openProfileModal() {
+  if (!token) { showToast('Сначала войдите в аккаунт'); openAuthModal('login'); return; }
+  try {
+    const ordersRes = await fetch(`${API_URL}/orders`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const orders = await ordersRes.json();
+    const profileRes = await fetch(`${API_URL}/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+    const user = await profileRes.json();
+    document.getElementById('profileModalTitle').innerText = `Профиль: ${user.login}`;
+    document.getElementById('profileInfo').innerHTML = `<p>Логин: ${user.login}</p>`;
+    let ordersHtml = '<h3>История заказов</h3>';
+    if (orders.length === 0) ordersHtml += '<p>Нет заказов</p>';
+    else {
+      ordersHtml += orders.map(order => `
+        <div class="order-item">
+          <div><strong>Заказ №${order.id}</strong> от ${order.date}</div>
+          <div>Сумма: ${order.total.toLocaleString()} ₽</div>
+          <div>Товары: ${order.items.map(i => `${i.name} x${i.qty}`).join(', ')}</div>
+        </div>
+      `).join('');
+    }
+    document.getElementById('profileOrders').innerHTML = ordersHtml;
+    document.getElementById('profileModal').classList.add('active');
+  } catch(e) { showToast('Ошибка загрузки профиля'); }
+}
+function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
+async function deleteAccount() {
+  if (!confirm('Вы уверены, что хотите удалить аккаунт? Все данные будут потеряны.')) return;
+  try {
+    const res = await fetch(`${API_URL}/profile`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+    if (res.ok) {
+      logoutUser();
+      closeProfileModal();
+    } else showToast('Ошибка удаления');
+  } catch(e) { showToast('Ошибка сети'); }
 }
 
-// Рендер акций
-function renderPromotions() {
-  const grid = document.getElementById('promoGrid');
-  grid.innerHTML = PROMOTIONS.map(p => `
-    <div class="promo-card">
-      <div class="promo-card-banner"><img src="${p.image}" alt="${p.title}"></div>
-      <div class="promo-card-body">
-        <h3 class="promo-card-title">${p.title}</h3>
-        <p class="promo-card-text">${p.text}</p>
-        <div class="promo-meta">📅 ${p.date}<br>📱 ${p.models}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// Синхронизация
-window.addEventListener('storage', (e) => {
-  if (e.key === 'california_user') loadUser();
-  if (e.key === 'california_cart') loadCart();
+window.addEventListener('load', () => {
+  loadPromotions();
+  loadUser();
+  document.getElementById('cartDrawerOverlay').addEventListener('click', (e) => { if (e.target === document.getElementById('cartDrawerOverlay')) closeCartDrawer(); });
+  document.getElementById('logoutBtn').onclick = () => { logoutUser(); closeProfileModal(); };
+  document.getElementById('deleteAccountBtn').onclick = deleteAccount;
 });
-
-document.getElementById('cartIconBtn').addEventListener('click', openCartDrawer);
-document.getElementById('cartDrawerOverlay').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('cartDrawerOverlay')) closeCartDrawer();
-});
-renderPromotions();
-loadCart();
-loadUser();
 </script>
 </body>
 </html>
