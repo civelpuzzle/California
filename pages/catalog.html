@@ -604,36 +604,10 @@ ul { list-style: none; }
 .modal {
   background: var(--bg-white);
   border-radius: var(--radius-lg);
-  max-width: 800px;
-  width: 90%;
-  max-height: 85vh;
-  overflow: auto;
   position: relative;
 }
-.modal-product {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-}
-.modal-product-img {
-  background: var(--bg-gray);
-  padding: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-.modal-product-img img {
-  max-width: 100%;
-  max-height: 260px;
-  object-fit: contain;
-}
-.modal-product-info {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+
+/* Единые стили для модальных окон */
 .modal-close {
   position: absolute;
   top: 12px;
@@ -652,38 +626,15 @@ ul { list-style: none; }
 .modal-close:hover {
   background: var(--border);
 }
-.modal-qty {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 8px 0;
-}
-.modal-qty button {
-  width: 32px;
-  height: 32px;
-  background: var(--border);
-  border-radius: var(--radius-sm);
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-.modal-qty span {
-  font-size: 1.2rem;
-  font-weight: 600;
-  min-width: 30px;
-  text-align: center;
-}
-.modal-add-btn {
-  background: var(--primary);
-  color: white;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  font-weight: 700;
-  margin-top: 8px;
-}
 
 .auth-modal {
   max-width: 420px;
+  width: 90%;
   padding: 28px;
+}
+.auth-modal h2 {
+  margin-bottom: 16px;
+  color: var(--primary);
 }
 .auth-modal input {
   width: 100%;
@@ -692,6 +643,11 @@ ul { list-style: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-family: inherit;
+  font-size: 1rem;
+}
+.auth-modal input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 .auth-modal button[type="submit"] {
   width: 100%;
@@ -701,10 +657,24 @@ ul { list-style: none; }
   border-radius: var(--radius-sm);
   font-weight: 700;
   margin-top: 12px;
+  transition: var(--transition-fast);
+}
+.auth-modal button[type="submit"]:hover {
+  background: var(--primary-dark);
+}
+#authSwitch {
+  margin-top: 16px;
+  text-align: center;
+}
+#authSwitch a {
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .checkout-modal {
   max-width: 500px;
+  width: 90%;
   padding: 28px;
 }
 .checkout-modal input, .checkout-modal textarea {
@@ -828,7 +798,7 @@ ul { list-style: none; }
 <header class="header">
   <div class="header-top">
     <a href="catalog.html" class="logo">
-      <img src="../assets/logoNoFone.png" alt="logo" class="logotype">
+      <img src="/assets/logoNoFone.png" alt="logo" class="logotype">
       California
     </a>
     <nav class="nav">
@@ -945,7 +915,7 @@ ul { list-style: none; }
       <input type="password" id="authPassword" placeholder="Пароль" required>
       <button type="submit" id="authSubmitBtn">Войти</button>
     </form>
-    <p id="authSwitch" style="margin-top:16px; text-align:center;">Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a></p>
+    <p id="authSwitch">Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a></p>
   </div>
 </div>
 
@@ -1269,7 +1239,6 @@ function closeProductModal() { document.getElementById('productModal').classList
 function changeModalQty(d) { modalQty = Math.max(1, modalQty + d); document.getElementById('modalQty').innerText = modalQty; }
 function addFromModal() { addToCart(modalProductId, modalQty); closeProductModal(); }
 
-// Profile modal functions
 async function openProfileModal() {
   if (!token) { showToast('Сначала войдите в аккаунт'); openAuthModal('login'); return; }
   try {

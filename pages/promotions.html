@@ -310,6 +310,27 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   border-radius: var(--radius-lg);
   position: relative;
 }
+
+/* Единые стили для модальных окон */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+.modal-close:hover {
+  background: var(--border);
+}
+
 .auth-modal {
   max-width: 420px;
   width: 90%;
@@ -345,22 +366,16 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 .auth-modal button[type="submit"]:hover {
   background: var(--primary-dark);
 }
-.auth-modal .modal-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 32px;
-  height: 32px;
-  background: var(--bg-gray);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#authSwitch {
+  margin-top: 16px;
+  text-align: center;
+}
+#authSwitch a {
+  color: var(--primary);
   cursor: pointer;
+  text-decoration: underline;
 }
-.auth-modal .modal-close:hover {
-  background: var(--border);
-}
+
 .checkout-modal {
   max-width: 500px;
   width: 90%;
@@ -387,6 +402,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   font-weight: 700;
   margin-top: 12px;
 }
+
 .profile-modal {
   max-width: 600px;
   width: 90%;
@@ -535,7 +551,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
 <header class="header">
   <div class="header-top">
     <a href="catalog.html" class="logo">
-      <img src="../assets/logoNoFone.png" alt="logo" class="logotype">
+      <img src="/assets/logoNoFone.png" alt="logo" class="logotype">
       California
     </a>
     <nav class="nav">
@@ -602,7 +618,7 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
       <input type="password" id="authPassword" placeholder="Пароль" required>
       <button type="submit" id="authSubmitBtn">Войти</button>
     </form>
-    <p id="authSwitch" style="margin-top:16px; text-align:center;">Нет аккаунта? <a onclick="switchAuthMode()" style="color:var(--primary); cursor:pointer;">Зарегистрироваться</a></p>
+    <p id="authSwitch">Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a></p>
   </div>
 </div>
 
