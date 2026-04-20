@@ -53,8 +53,8 @@
 
 1. **Клонировать репозиторий**
    ```bash
-   git clone https://github.com/your-username/california-store.git
-   cd california-store
+   git clone https://github.com/civelpuzzle/California.git
+   cd California
    ```
 
 2. **Установить зависимости**
@@ -80,7 +80,7 @@
 ## 📁 Структура проекта
 
 ```
-california-store/
+California/
 ├── server.js                # Главный сервер (Express, API, SQLite)
 ├── admin.html               # Админ-панель (интерфейс)
 ├── package.json             # Зависимости и скрипты
@@ -147,20 +147,19 @@ california-store/
 
 ## 📄 Лицензия
 
-Проект распространяется под лицензией MIT. Подробнее в файле [LICENSE](LICENSE) (если добавлен).
+Да нету ее, не смотри сюда.
 
 ---
 
 ## 🤝 Контрибьюция
 
-Предложения по улучшению приветствуются. Создавайте issue или pull request.
+Предложения по улучшению не приветствуются. Не пишите нам
 
 ---
 
 ## 📧 Контакты
 
-Автор: [Ваше имя или ссылка на GitHub]  
-Email: your-email@example.com
+Только по голубиной почте или мессенджер SUCKS.
 
 ---
 
