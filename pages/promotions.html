@@ -310,8 +310,6 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   border-radius: var(--radius-lg);
   position: relative;
 }
-
-/* Единые стили для модальных окон */
 .modal-close {
   position: absolute;
   top: 12px;
@@ -846,7 +844,22 @@ function updateAuthUI() {
     greetDiv.style.display = 'none';
   }
 }
-function openAuthModal(mode) { authMode = mode; document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация'; document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться'; document.getElementById('authModal').classList.add('active'); }
+function openAuthModal(mode) {
+  authMode = mode;
+  const title = document.getElementById('authTitle');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const switchText = document.getElementById('authSwitch');
+  if (mode === 'login') {
+    title.textContent = 'Вход';
+    submitBtn.textContent = 'Войти';
+    switchText.innerHTML = 'Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a>';
+  } else {
+    title.textContent = 'Регистрация';
+    submitBtn.textContent = 'Зарегистрироваться';
+    switchText.innerHTML = 'Есть аккаунт? <a onclick="switchAuthMode()">Войти</a>';
+  }
+  document.getElementById('authModal').classList.add('active');
+}
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
 

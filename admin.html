@@ -49,7 +49,6 @@
           <option>smartphones</option><option>laptops</option><option>tablets</option><option>wearables</option><option>audio</option>
         </select>
       </div>
-      <div class="form-group"><label>Бейдж (hit,sale,new):</label><input type="text" id="productBadge"></div>
       <div class="form-group"><label>Популярность (0-100):</label><input type="number" id="productPopular" value="0"></div>
       <button type="submit" class="add-btn">Сохранить</button>
       <button type="button" id="cancelProductBtn">Отмена</button>
@@ -127,7 +126,6 @@ function fillProductForm(p) {
   document.getElementById('productImage').value = p.image || '';
   document.getElementById('productDesc').value = p.description || '';
   document.getElementById('productCategory').value = p.category;
-  document.getElementById('productBadge').value = p.badge || '';
   document.getElementById('productPopular').value = p.popular || 0;
 }
 
@@ -142,7 +140,6 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     image: document.getElementById('productImage').value,
     description: document.getElementById('productDesc').value,
     category: document.getElementById('productCategory').value,
-    badge: document.getElementById('productBadge').value,
     popular: parseInt(document.getElementById('productPopular').value) || 0
   };
   await fetchWithAuth(`${API_BASE}/products`, { method: 'POST', body: JSON.stringify(data) });

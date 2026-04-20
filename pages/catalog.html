@@ -587,6 +587,7 @@ ul { list-style: none; }
   margin-top: 12px;
 }
 
+/* Модальное окно товара */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -605,9 +606,11 @@ ul { list-style: none; }
   background: var(--bg-white);
   border-radius: var(--radius-lg);
   position: relative;
+  max-width: 90vw;
+  width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
-
-/* Единые стили для модальных окон */
 .modal-close {
   position: absolute;
   top: 12px;
@@ -622,11 +625,70 @@ ul { list-style: none; }
   font-size: 1.2rem;
   transition: var(--transition-fast);
   cursor: pointer;
+  z-index: 10;
 }
 .modal-close:hover {
   background: var(--border);
 }
 
+.modal-product {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px;
+}
+.modal-product-img {
+  background: var(--bg-gray);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-product-img img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+}
+.modal-product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-qty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.modal-qty button {
+  width: 36px;
+  height: 36px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.modal-qty span {
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+.modal-add-btn {
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  margin-top: 12px;
+  transition: var(--transition-fast);
+}
+.modal-add-btn:hover {
+  background: var(--primary-dark);
+}
+
+/* Стили для модальных окон авторизации, оформления, профиля */
 .auth-modal {
   max-width: 420px;
   width: 90%;
@@ -776,14 +838,13 @@ ul { list-style: none; }
   .product-grid { grid-template-columns: repeat(2,1fr); }
   .slide { flex-direction: column; text-align: center; padding: 32px; }
   .slide-content { max-width: 100%; }
+  .modal-product { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
   .nav, .btn-login, .btn-register { display: none; }
   .mobile-menu-btn { display: block; }
   .product-grid { grid-template-columns: 1fr; }
   .footer-content { grid-template-columns: 1fr; }
-  .modal-product { grid-template-columns: 1fr; }
-  .modal-product-img { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
 }
 .logotype {
   width: 65px;
@@ -1027,9 +1088,17 @@ document.getElementById('searchInput').addEventListener('input', e => { searchQu
 document.getElementById('sortSelect').addEventListener('change', e => handleSort(e.target.value));
 
 function initFilters() {
-  const categories = ['smartphones', 'laptops', 'tablets', 'wearables', 'audio'];
+  const categories = [
+    { value: 'smartphones', label: 'Смартфоны' },
+    { value: 'laptops', label: 'Ноутбуки' },
+    { value: 'tablets', label: 'Планшеты' },
+    { value: 'wearables', label: 'Гаджеты' },
+    { value: 'audio', label: 'Аудио' }
+  ];
   let html = `<button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">Все</button>`;
-  categories.forEach(c => { html += `<button class="filter-btn" data-filter="${c}" onclick="handleFilter('${c}')">${c}</button>`; });
+  categories.forEach(c => {
+    html += `<button class="filter-btn" data-filter="${c.value}" onclick="handleFilter('${c.value}')">${c.label}</button>`;
+  });
   document.getElementById('filterGroup').innerHTML = html;
 }
 function applyCategoryFilter(category) { handleFilter(category); document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
@@ -1215,7 +1284,22 @@ function updateAuthUI() {
     greetDiv.style.display = 'none';
   }
 }
-function openAuthModal(mode) { authMode = mode; document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация'; document.getElementById('authSubmitBtn').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться'; document.getElementById('authModal').classList.add('active'); }
+function openAuthModal(mode) {
+  authMode = mode;
+  const title = document.getElementById('authTitle');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const switchText = document.getElementById('authSwitch');
+  if (mode === 'login') {
+    title.textContent = 'Вход';
+    submitBtn.textContent = 'Войти';
+    switchText.innerHTML = 'Нет аккаунта? <a onclick="switchAuthMode()">Зарегистрироваться</a>';
+  } else {
+    title.textContent = 'Регистрация';
+    submitBtn.textContent = 'Зарегистрироваться';
+    switchText.innerHTML = 'Есть аккаунт? <a onclick="switchAuthMode()">Войти</a>';
+  }
+  document.getElementById('authModal').classList.add('active');
+}
 function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
 function switchAuthMode() { openAuthModal(authMode === 'login' ? 'register' : 'login'); }
 
