@@ -14,7 +14,7 @@ const ADMIN_PASSWORD = 'admin123';
 app.use(cors());
 app.use(express.json());
 
-// Раздача статики: страницы из папки pages, картинки из assets по префиксу /assets
+// Раздача статики
 app.use(express.static(path.join(__dirname, 'pages')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
@@ -26,7 +26,8 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     login TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
   )`);
 
   // Products
@@ -73,7 +74,7 @@ db.serialize(() => {
     total INTEGER NOT NULL
   )`);
 
-  // Seed products if empty (исправлены пути на /assets/)
+  // Seed products if empty
   db.get(`SELECT COUNT(*) as count FROM products`, (err, row) => {
     if (row.count === 0) {
       const defaultProducts = [
@@ -98,7 +99,7 @@ db.serialize(() => {
     }
   });
 
-  // Seed promotions if empty (исправлены пути на /assets/)
+  // Seed promotions if empty
   db.get(`SELECT COUNT(*) as count FROM promotions`, (err, row) => {
     if (row.count === 0) {
       const defaultPromotions = [
@@ -140,11 +141,49 @@ const authenticateAdmin = (req, res, next) => {
   }
 };
 
+// Создайте middleware для защиты всех админ-страниц
+const protectAdmin = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  
+  if (!authHeader) {
+    // Запрашиваем авторизацию у браузера
+    res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+    return res.status(401).send('Требуется авторизация');
+  }
+  
+  const base64 = authHeader.split(' ')[1];
+  const [username, password] = Buffer.from(base64, 'base64').toString().split(':');
+  
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    return next();
+  }
+  
+  res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
+  res.status(401).send('Неверные данные авторизации');
+};
+
+// Защищаем HTML страницу админки
+app.get('/admin', protectAdmin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Защищаем все API маршруты админа
+app.use('/api/admin', protectAdmin);
+
 // ---------- API Routes ----------
-// Auth
+// Auth с проверкой длины
 app.post('/api/auth/register', async (req, res) => {
   const { login, password } = req.body;
   if (!login || !password) return res.status(400).json({ error: 'Логин и пароль обязательны' });
+  
+  // ПРОВЕРКА НА КОЛИЧЕСТВО СИМВОЛОВ
+  if (login.length < 3 || login.length > 20) {
+    return res.status(400).json({ error: 'Логин должен содержать от 3 до 20 символов' });
+  }
+  if (password.length < 6 || password.length > 30) {
+    return res.status(400).json({ error: 'Пароль должен содержать от 6 до 30 символов' });
+  }
+  
   const hashedPassword = await bcrypt.hash(password, 10);
   db.run(`INSERT INTO users (login, password) VALUES (?, ?)`, [login, hashedPassword], function(err) {
     if (err) {
@@ -152,7 +191,7 @@ app.post('/api/auth/register', async (req, res) => {
       return res.status(500).json({ error: 'Ошибка сервера' });
     }
     const token = jwt.sign({ id: this.lastID, login }, SECRET_KEY, { expiresIn: '7d' });
-    res.json({ token, user: { login } });
+    res.json({ token, user: { login, id: this.lastID } });
   });
 });
 
@@ -164,7 +203,7 @@ app.post('/api/auth/login', (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json({ error: 'Неверный логин или пароль' });
     const token = jwt.sign({ id: user.id, login }, SECRET_KEY, { expiresIn: '7d' });
-    res.json({ token, user: { login: user.login } });
+    res.json({ token, user: { login: user.login, id: user.id } });
   });
 });
 
@@ -254,17 +293,85 @@ app.delete('/api/cart/:productId', authenticateToken, (req, res) => {
   });
 });
 
-// Orders
+// Функция для валидации имени
+function validateName(name) {
+  if (!name || name.trim().length < 2) return false;
+  if (name.trim().length > 50) return false;
+  // Только буквы, пробелы, дефисы и точки
+  const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s\-\.]{2,50}$/;
+  return nameRegex.test(name.trim());
+}
+
+// Функция для валидации телефона
+function validatePhone(phone) {
+  if (!phone) return false;
+  // Удаляем все нецифровые символы
+  const cleanPhone = phone.replace(/[^\d+]/g, '');
+  
+  // Проверяем формат:
+  // +7XXXXXXXXXX (11 цифр после +7)
+  // 8XXXXXXXXXX (11 цифр)
+  // XXXXXXXXXX (10 цифр)
+  const phoneRegex = /^(\+7|8)?[\s\-]?\(?[0-9]{3}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+  const cleanRegex = /^(\+7|8)?\d{10}$/;
+  
+  if (!phoneRegex.test(phone) && !cleanRegex.test(cleanPhone)) {
+    return false;
+  }
+  
+  // Проверяем длину (10 цифр без кода или 11 с кодом)
+  const digitsOnly = phone.replace(/\D/g, '');
+  return digitsOnly.length === 10 || digitsOnly.length === 11;
+}
+
+// Orders с валидацией
 app.post('/api/orders', authenticateToken, (req, res) => {
   const { name, phone, email, address, items, total } = req.body;
+  
+  // Проверка на пустые поля
   if (!name || !phone || !email || !address || !items || !total) {
-    return res.status(400).json({ error: 'Не все поля заполнены' });
+    return res.status(400).json({ error: 'Заполните все поля' });
   }
-  const date = new Date().toLocaleString();
+  
+  // ВАЛИДАЦИЯ ИМЕНИ
+  if (!validateName(name)) {
+    return res.status(400).json({ 
+      error: 'Имя должно содержать от 2 до 50 символов и только буквы, пробелы, дефисы или точки' 
+    });
+  }
+  
+  // ВАЛИДАЦИЯ ТЕЛЕФОНА
+  if (!validatePhone(phone)) {
+    return res.status(400).json({ 
+      error: 'Введите корректный номер телефона (например: +7 123 456-78-90 или 89123456789)' 
+    });
+  }
+  
+  // Валидация email
+  const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Введите корректный email' });
+  }
+  
+  // Валидация адреса
+  if (address.trim().length < 5 || address.trim().length > 200) {
+    return res.status(400).json({ error: 'Адрес должен содержать от 5 до 200 символов' });
+  }
+  
+  // Форматируем телефон для хранения
+  const formattedPhone = phone.replace(/\D/g, '');
+  
+  const date = new Date().toLocaleString('ru-RU');
   const itemsJson = JSON.stringify(items);
+  
   db.run(`INSERT INTO orders (userId, date, name, phone, email, address, items, total) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    [req.user.id, date, name, phone, email, address, itemsJson, total], function(err) {
-      if (err) return res.status(500).json({ error: 'Ошибка сохранения заказа' });
+    [req.user.id, date, name.trim(), formattedPhone, email.trim(), address.trim(), itemsJson, total], 
+    function(err) {
+      if (err) {
+        console.error('Ошибка сохранения заказа:', err);
+        return res.status(500).json({ error: 'Ошибка сохранения заказа' });
+      }
+      
       db.run(`DELETE FROM carts WHERE userId = ?`, [req.user.id], () => {
         res.json({ success: true, orderId: this.lastID });
       });
@@ -281,7 +388,7 @@ app.get('/api/orders', authenticateToken, (req, res) => {
 
 // Profile
 app.get('/api/profile', authenticateToken, (req, res) => {
-  res.json({ login: req.user.login });
+  res.json({ login: req.user.login, id: req.user.id });
 });
 
 app.delete('/api/profile', authenticateToken, (req, res) => {
@@ -293,7 +400,44 @@ app.delete('/api/profile', authenticateToken, (req, res) => {
   });
 });
 
-// ---------- Admin API ----------
+// ---------- Admin API (НОВЫЕ МЕТОДЫ) ----------
+// Получить всех пользователей
+app.get('/api/admin/users', authenticateAdmin, (req, res) => {
+  db.all(`SELECT * FROM users ORDER BY id ASC`, [], (err, users) => {
+    if (err) return res.status(500).json({ error: 'Ошибка' });
+    res.json(users);
+  });
+});
+
+// Удалить пользователя
+app.delete('/api/admin/users/:id', authenticateAdmin, (req, res) => {
+  const userId = req.params.id;
+  db.run(`DELETE FROM users WHERE id = ?`, [userId], err => {
+    if (err) return res.status(500).json({ error: 'Ошибка удаления пользователя' });
+    db.run(`DELETE FROM carts WHERE userId = ?`, [userId]);
+    db.run(`DELETE FROM orders WHERE userId = ?`, [userId]);
+    res.json({ success: true });
+  });
+});
+
+// Получить все заказы (для админа)
+app.get('/api/admin/orders', authenticateAdmin, (req, res) => {
+  db.all(`SELECT o.*, u.login as user_login FROM orders o LEFT JOIN users u ON o.userId = u.id ORDER BY o.id DESC`, [], (err, orders) => {
+    if (err) return res.status(500).json({ error: 'Ошибка' });
+    orders = orders.map(o => ({ ...o, items: JSON.parse(o.items) }));
+    res.json(orders);
+  });
+});
+
+// Удалить заказ (для админа)
+app.delete('/api/admin/orders/:id', authenticateAdmin, (req, res) => {
+  db.run(`DELETE FROM orders WHERE id = ?`, [req.params.id], err => {
+    if (err) return res.status(500).json({ error: 'Ошибка удаления заказа' });
+    res.json({ success: true });
+  });
+});
+
+// Обновить товары и акции (существующие методы)
 app.get('/api/admin/products', authenticateAdmin, (req, res) => {
   db.all(`SELECT * FROM products ORDER BY id ASC`, [], (err, products) => {
     if (err) return res.status(500).json({ error: 'Ошибка' });

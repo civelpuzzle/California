@@ -7,17 +7,19 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
-    .container { max-width: 1200px; margin: 0 auto; }
+    .container { max-width: 1400px; margin: 0 auto; }
     h1 { margin-bottom: 20px; color: #6C3FC5; }
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-    .tab-btn { padding: 10px 20px; background: #ddd; border: none; cursor: pointer; border-radius: 8px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { padding: 10px 20px; background: #ddd; border: none; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+    .tab-btn:hover { background: #bbb; }
     .tab-btn.active { background: #6C3FC5; color: white; }
     .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     .tab-content.active { display: block; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; overflow-x: auto; display: block; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background: #f2f2f2; }
-    button { padding: 6px 12px; margin: 2px; cursor: pointer; border-radius: 4px; border: none; }
+    button { padding: 6px 12px; margin: 2px; cursor: pointer; border-radius: 4px; border: none; transition: 0.2s; }
+    button:hover { opacity: 0.8; }
     .form-group { margin-bottom: 15px; }
     label { display: inline-block; width: 150px; font-weight: bold; }
     input, textarea, select { width: 300px; padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
@@ -25,7 +27,15 @@
     .add-btn { background: #28a745; color: white; }
     .edit-btn { background: #ffc107; }
     .delete-btn { background: #dc3545; color: white; }
-    button:hover { opacity: 0.8; }
+    .view-btn { background: #17a2b8; color: white; }
+    .stats { background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+    .stat-card { background: white; padding: 15px; border-radius: 8px; text-align: center; }
+    .stat-card h3 { font-size: 24px; color: #6C3FC5; }
+    @media (max-width: 768px) {
+      .form-group label { display: block; margin-bottom: 5px; }
+      input, textarea, select { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -34,7 +44,11 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="products">Товары</button>
     <button class="tab-btn" data-tab="promotions">Акции</button>
+    <button class="tab-btn" data-tab="users">Пользователи</button>
+    <button class="tab-btn" data-tab="orders">Заказы</button>
   </div>
+  
+  <!-- Товары -->
   <div id="products-tab" class="tab-content active">
     <h2>Управление товарами</h2>
     <form id="productForm">
@@ -49,15 +63,20 @@
           <option>smartphones</option><option>laptops</option><option>tablets</option><option>wearables</option><option>audio</option>
         </select>
       </div>
+      <div class="form-group"><label>Бейдж (hit,sale,new):</label><input type="text" id="productBadge"></div>
       <div class="form-group"><label>Популярность (0-100):</label><input type="number" id="productPopular" value="0"></div>
       <button type="submit" class="add-btn">Сохранить</button>
       <button type="button" id="cancelProductBtn">Отмена</button>
     </form>
-    <table id="productsTable">
-      <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Категория</th><th>Действия</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div style="overflow-x: auto;">
+      <table id="productsTable">
+        <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Категория</th><th>Действия</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
+  
+  <!-- Акции -->
   <div id="promotions-tab" class="tab-content">
     <h2>Управление акциями</h2>
     <form id="promoForm">
@@ -70,10 +89,36 @@
       <button type="submit" class="add-btn">Сохранить</button>
       <button type="button" id="cancelPromoBtn">Отмена</button>
     </form>
-    <table id="promosTable">
-      <thead><tr><th>ID</th><th>Название</th><th>Дата</th><th>Действия</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div style="overflow-x: auto;">
+      <table id="promosTable">
+        <thead><tr><th>ID</th><th>Название</th><th>Дата</th><th>Действия</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Пользователи (НОВОЕ) -->
+  <div id="users-tab" class="tab-content">
+    <h2>Управление пользователями</h2>
+    <div class="stats" id="usersStats"></div>
+    <div style="overflow-x: auto;">
+      <table id="usersTable">
+        <thead><tr><th>ID</th><th>Логин</th><th>Действия</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Заказы (НОВОЕ) -->
+  <div id="orders-tab" class="tab-content">
+    <h2>Управление заказами</h2>
+    <div class="stats" id="ordersStats"></div>
+    <div style="overflow-x: auto;">
+      <table id="ordersTable">
+        <thead><tr><th>ID</th><th>Пользователь</th><th>Дата</th><th>Имя</th><th>Телефон</th><th>Email</th><th>Адрес</th><th>Сумма</th><th>Товары</th><th>Действия</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -126,6 +171,7 @@ function fillProductForm(p) {
   document.getElementById('productImage').value = p.image || '';
   document.getElementById('productDesc').value = p.description || '';
   document.getElementById('productCategory').value = p.category;
+  document.getElementById('productBadge').value = p.badge || '';
   document.getElementById('productPopular').value = p.popular || 0;
 }
 
@@ -140,6 +186,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     image: document.getElementById('productImage').value,
     description: document.getElementById('productDesc').value,
     category: document.getElementById('productCategory').value,
+    badge: document.getElementById('productBadge').value,
     popular: parseInt(document.getElementById('productPopular').value) || 0
   };
   await fetchWithAuth(`${API_BASE}/products`, { method: 'POST', body: JSON.stringify(data) });
@@ -213,6 +260,79 @@ document.getElementById('cancelPromoBtn').addEventListener('click', () => {
   document.getElementById('promoId').value = '';
 });
 
+// Users (НОВОЕ)
+async function loadUsers() {
+  const data = await fetchWithAuth(`${API_BASE}/users`);
+  const tbody = document.querySelector('#usersTable tbody');
+  tbody.innerHTML = '';
+  data.forEach(user => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = user.id;
+    row.insertCell(1).innerText = user.login;
+    const actions = row.insertCell(2);
+    const delBtn = document.createElement('button');
+    delBtn.innerText = 'Удалить';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = async () => {
+      if (confirm(`Удалить пользователя "${user.login}"? Все его заказы и корзина будут удалены.`)) {
+        await fetchWithAuth(`${API_BASE}/users/${user.id}`, { method: 'DELETE' });
+        loadUsers();
+        loadOrders(); // Обновляем заказы
+      }
+    };
+    actions.appendChild(delBtn);
+  });
+  
+  // Статистика пользователей
+  document.getElementById('usersStats').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><h3>${data.length}</h3><p>Всего пользователей</p></div>
+    </div>
+  `;
+}
+
+// Orders (НОВОЕ)
+async function loadOrders() {
+  const data = await fetchWithAuth(`${API_BASE}/orders`);
+  const tbody = document.querySelector('#ordersTable tbody');
+  tbody.innerHTML = '';
+  let totalSum = 0;
+  data.forEach(order => {
+    const row = tbody.insertRow();
+    row.insertCell(0).innerText = order.id;
+    row.insertCell(1).innerText = order.user_login || `User #${order.userId}`;
+    row.insertCell(2).innerText = order.date;
+    row.insertCell(3).innerText = order.name;
+    row.insertCell(4).innerText = order.phone;
+    row.insertCell(5).innerText = order.email;
+    row.insertCell(6).innerText = order.address;
+    row.insertCell(7).innerText = order.total.toLocaleString() + ' ₽';
+    const itemsText = order.items.map(i => `${i.name} x${i.qty}`).join(', ');
+    row.insertCell(8).innerHTML = `<span title="${itemsText}">${itemsText.substring(0, 50)}${itemsText.length > 50 ? '...' : ''}</span>`;
+    const actions = row.insertCell(9);
+    const delBtn = document.createElement('button');
+    delBtn.innerText = 'Удалить';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = async () => {
+      if (confirm(`Удалить заказ #${order.id}?`)) {
+        await fetchWithAuth(`${API_BASE}/orders/${order.id}`, { method: 'DELETE' });
+        loadOrders();
+      }
+    };
+    actions.appendChild(delBtn);
+    totalSum += order.total;
+  });
+  
+  // Статистика заказов
+  document.getElementById('ordersStats').innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><h3>${data.length}</h3><p>Всего заказов</p></div>
+      <div class="stat-card"><h3>${totalSum.toLocaleString()} ₽</h3><p>Общая сумма</p></div>
+      <div class="stat-card"><h3>${data.length > 0 ? (totalSum / data.length).toLocaleString() : 0} ₽</h3><p>Средний чек</p></div>
+    </div>
+  `;
+}
+
 // Tabs
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -223,6 +343,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById(`${tab}-tab`).classList.add('active');
     if (tab === 'products') loadProducts();
     else if (tab === 'promotions') loadPromotions();
+    else if (tab === 'users') loadUsers();
+    else if (tab === 'orders') loadOrders();
   });
 });
 
