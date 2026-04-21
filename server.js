@@ -146,7 +146,6 @@ const protectAdmin = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   
   if (!authHeader) {
-    // Запрашиваем авторизацию у браузера
     res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
     return res.status(401).send('Требуется авторизация');
   }
@@ -176,7 +175,6 @@ app.post('/api/auth/register', async (req, res) => {
   const { login, password } = req.body;
   if (!login || !password) return res.status(400).json({ error: 'Логин и пароль обязательны' });
   
-  // ПРОВЕРКА НА КОЛИЧЕСТВО СИМВОЛОВ
   if (login.length < 3 || login.length > 20) {
     return res.status(400).json({ error: 'Логин должен содержать от 3 до 20 символов' });
   }
@@ -297,7 +295,6 @@ app.delete('/api/cart/:productId', authenticateToken, (req, res) => {
 function validateName(name) {
   if (!name || name.trim().length < 2) return false;
   if (name.trim().length > 50) return false;
-  // Только буквы, пробелы, дефисы и точки
   const nameRegex = /^[a-zA-Zа-яА-ЯёЁ\s\-\.]{2,50}$/;
   return nameRegex.test(name.trim());
 }
@@ -305,21 +302,12 @@ function validateName(name) {
 // Функция для валидации телефона
 function validatePhone(phone) {
   if (!phone) return false;
-  // Удаляем все нецифровые символы
   const cleanPhone = phone.replace(/[^\d+]/g, '');
-  
-  // Проверяем формат:
-  // +7XXXXXXXXXX (11 цифр после +7)
-  // 8XXXXXXXXXX (11 цифр)
-  // XXXXXXXXXX (10 цифр)
   const phoneRegex = /^(\+7|8)?[\s\-]?\(?[0-9]{3}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
   const cleanRegex = /^(\+7|8)?\d{10}$/;
-  
   if (!phoneRegex.test(phone) && !cleanRegex.test(cleanPhone)) {
     return false;
   }
-  
-  // Проверяем длину (10 цифр без кода или 11 с кодом)
   const digitsOnly = phone.replace(/\D/g, '');
   return digitsOnly.length === 10 || digitsOnly.length === 11;
 }
@@ -328,39 +316,32 @@ function validatePhone(phone) {
 app.post('/api/orders', authenticateToken, (req, res) => {
   const { name, phone, email, address, items, total } = req.body;
   
-  // Проверка на пустые поля
   if (!name || !phone || !email || !address || !items || !total) {
     return res.status(400).json({ error: 'Заполните все поля' });
   }
   
-  // ВАЛИДАЦИЯ ИМЕНИ
   if (!validateName(name)) {
     return res.status(400).json({ 
       error: 'Имя должно содержать от 2 до 50 символов и только буквы, пробелы, дефисы или точки' 
     });
   }
   
-  // ВАЛИДАЦИЯ ТЕЛЕФОНА
   if (!validatePhone(phone)) {
     return res.status(400).json({ 
       error: 'Введите корректный номер телефона (например: +7 123 456-78-90 или 89123456789)' 
     });
   }
   
-  // Валидация email
   const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Введите корректный email' });
   }
   
-  // Валидация адреса
   if (address.trim().length < 5 || address.trim().length > 200) {
     return res.status(400).json({ error: 'Адрес должен содержать от 5 до 200 символов' });
   }
   
-  // Форматируем телефон для хранения
   const formattedPhone = phone.replace(/\D/g, '');
-  
   const date = new Date().toLocaleString('ru-RU');
   const itemsJson = JSON.stringify(items);
   
@@ -437,7 +418,7 @@ app.delete('/api/admin/orders/:id', authenticateAdmin, (req, res) => {
   });
 });
 
-// Обновить товары и акции (существующие методы)
+// Обновить товары (исправлено: поле badge опционально)
 app.get('/api/admin/products', authenticateAdmin, (req, res) => {
   db.all(`SELECT * FROM products ORDER BY id ASC`, [], (err, products) => {
     if (err) return res.status(500).json({ error: 'Ошибка' });
@@ -446,7 +427,9 @@ app.get('/api/admin/products', authenticateAdmin, (req, res) => {
 });
 
 app.post('/api/admin/products', authenticateAdmin, (req, res) => {
-  const { id, name, price, oldPrice, image, description, category, badge, popular } = req.body;
+  const { id, name, price, oldPrice, image, description, category, popular } = req.body;
+  // badge больше не используется, но если вдруг придет из старого клиента - проигнорируем
+  const badge = null; // или можно оставить как было, но лучше не сохранять
   if (!name || !price || !category) return res.status(400).json({ error: 'Название, цена и категория обязательны' });
   if (id) {
     db.run(`UPDATE products SET name=?, price=?, oldPrice=?, image=?, description=?, category=?, badge=?, popular=? WHERE id=?`,

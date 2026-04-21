@@ -63,7 +63,7 @@
           <option>smartphones</option><option>laptops</option><option>tablets</option><option>wearables</option><option>audio</option>
         </select>
       </div>
-      <div class="form-group"><label>Бейдж (hit,sale,new):</label><input type="text" id="productBadge"></div>
+      <!-- поле "Бейдж" удалено -->
       <div class="form-group"><label>Популярность (0-100):</label><input type="number" id="productPopular" value="0"></div>
       <button type="submit" class="add-btn">Сохранить</button>
       <button type="button" id="cancelProductBtn">Отмена</button>
@@ -97,7 +97,7 @@
     </div>
   </div>
   
-  <!-- Пользователи (НОВОЕ) -->
+  <!-- Пользователи -->
   <div id="users-tab" class="tab-content">
     <h2>Управление пользователями</h2>
     <div class="stats" id="usersStats"></div>
@@ -109,7 +109,7 @@
     </div>
   </div>
   
-  <!-- Заказы (НОВОЕ) -->
+  <!-- Заказы -->
   <div id="orders-tab" class="tab-content">
     <h2>Управление заказами</h2>
     <div class="stats" id="ordersStats"></div>
@@ -171,8 +171,10 @@ function fillProductForm(p) {
   document.getElementById('productImage').value = p.image || '';
   document.getElementById('productDesc').value = p.description || '';
   document.getElementById('productCategory').value = p.category;
-  document.getElementById('productBadge').value = p.badge || '';
+  // поле badge удалено
   document.getElementById('productPopular').value = p.popular || 0;
+  // Прокрутка к форме
+  document.getElementById('productForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 document.getElementById('productForm').addEventListener('submit', async (e) => {
@@ -186,9 +188,9 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
     image: document.getElementById('productImage').value,
     description: document.getElementById('productDesc').value,
     category: document.getElementById('productCategory').value,
-    badge: document.getElementById('productBadge').value,
     popular: parseInt(document.getElementById('productPopular').value) || 0
   };
+  // поле badge не отправляется
   await fetchWithAuth(`${API_BASE}/products`, { method: 'POST', body: JSON.stringify(data) });
   document.getElementById('productForm').reset();
   document.getElementById('productId').value = '';
@@ -236,6 +238,8 @@ function fillPromoForm(p) {
   document.getElementById('promoImage').value = p.image || '';
   document.getElementById('promoDate').value = p.date || '';
   document.getElementById('promoModels').value = p.models || '';
+  // Прокрутка к форме
+  document.getElementById('promoForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 document.getElementById('promoForm').addEventListener('submit', async (e) => {
@@ -260,7 +264,7 @@ document.getElementById('cancelPromoBtn').addEventListener('click', () => {
   document.getElementById('promoId').value = '';
 });
 
-// Users (НОВОЕ)
+// Users
 async function loadUsers() {
   const data = await fetchWithAuth(`${API_BASE}/users`);
   const tbody = document.querySelector('#usersTable tbody');
@@ -277,13 +281,12 @@ async function loadUsers() {
       if (confirm(`Удалить пользователя "${user.login}"? Все его заказы и корзина будут удалены.`)) {
         await fetchWithAuth(`${API_BASE}/users/${user.id}`, { method: 'DELETE' });
         loadUsers();
-        loadOrders(); // Обновляем заказы
+        loadOrders();
       }
     };
     actions.appendChild(delBtn);
   });
   
-  // Статистика пользователей
   document.getElementById('usersStats').innerHTML = `
     <div class="stats-grid">
       <div class="stat-card"><h3>${data.length}</h3><p>Всего пользователей</p></div>
@@ -291,7 +294,7 @@ async function loadUsers() {
   `;
 }
 
-// Orders (НОВОЕ)
+// Orders
 async function loadOrders() {
   const data = await fetchWithAuth(`${API_BASE}/orders`);
   const tbody = document.querySelector('#ordersTable tbody');
@@ -323,7 +326,6 @@ async function loadOrders() {
     totalSum += order.total;
   });
   
-  // Статистика заказов
   document.getElementById('ordersStats').innerHTML = `
     <div class="stats-grid">
       <div class="stat-card"><h3>${data.length}</h3><p>Всего заказов</p></div>

@@ -591,16 +591,16 @@ button { cursor: pointer; border: none; font-family: inherit; background: none; 
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
+<!-- CHECKOUT MODAL (с подсказками) -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal checkout-modal">
     <button class="modal-close" onclick="closeCheckoutModal()">✕</button>
     <h2 style="margin-bottom:20px;">Оформление заказа</h2>
     <form id="checkoutForm" class="checkout-form" onsubmit="submitOrder(event)">
-      <input type="text" id="checkoutName" placeholder="Ваше имя" required>
-      <input type="tel" id="checkoutPhone" placeholder="Телефон" required>
-      <input type="email" id="checkoutEmail" placeholder="Email" required>
-      <textarea id="checkoutAddress" placeholder="Адрес доставки" required></textarea>
+      <input type="text" id="checkoutName" placeholder="Имя (от 2 до 50 символов, только буквы, пробелы, дефисы, точки)" required>
+      <input type="tel" id="checkoutPhone" placeholder="Телефон (например, +7 123 456-78-90 или 89123456789)" required>
+      <input type="email" id="checkoutEmail" placeholder="Email (например, name@example.com)" required>
+      <textarea id="checkoutAddress" placeholder="Адрес доставки (от 5 до 200 символов)" required></textarea>
       <button type="submit">Подтвердить заказ</button>
     </form>
   </div>
@@ -767,6 +767,7 @@ function openCheckoutModal() {
   document.getElementById('checkoutModal').classList.add('active');
 }
 function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
+
 async function submitOrder(e) {
   e.preventDefault();
   const name = document.getElementById('checkoutName').value;
@@ -788,7 +789,8 @@ async function submitOrder(e) {
       closeCheckoutModal();
       closeCartDrawer();
     } else {
-      showToast('Ошибка оформления заказа');
+      const data = await res.json();
+      showToast(data.error || 'Ошибка оформления заказа');
     }
   } catch (err) { console.error(err); showToast('Ошибка сети'); }
 }
